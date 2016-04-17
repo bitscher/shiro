@@ -18,9 +18,9 @@ shiro [-b] path_to_rom
 
 Screenshots
 -----------------------
-![Pokemon Green](/../screenshots/pokemongreen.png)
-![Dr Mario](/../screenshots/drmario.png)
-![Tetris](/../screenshots/tetris.png)
+![Pokemon Green](/screenshots/pokemongreen.png)
+![Dr Mario](/screenshots/drmario.png)
+![Tetris](/screenshots/tetris.png)
 
 License (BSD 3-Clause)
 -----------------------
