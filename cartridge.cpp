@@ -125,12 +125,12 @@ void Cartridge::loadRom(const char * path) {
 	case ROM_ONLY:
 	case ROM_RAM:
 	case ROM_RAM_BATT:
-		write = &Cartridge::writeROMOnly;
+		m_writeFunc = &Cartridge::writeROMOnly;
 		break;
 	case ROM_MBC1:
 	case ROM_MBC1_RAM:
 	case ROM_MBC1_RAM_BATT:
-		write = &Cartridge::writeMBC1;
+		m_writeFunc = &Cartridge::writeMBC1;
 	default:
 		break;
 	}
@@ -150,6 +150,11 @@ uint8_t Cartridge::read(uint16_t address)
 		DEBUG_ONLY(fprintf(stderr, "Illegal read in Catridge at address 0x%04X\n", address););
 		return 0xFF;
 	}
+}
+
+void Cartridge::write(uint16_t address, uint8_t data)
+{
+	m_writeFunc(*this, address, data);
 }
 
 void Cartridge::writeROMOnly(uint16_t address, uint8_t value)

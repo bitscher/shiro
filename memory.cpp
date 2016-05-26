@@ -104,8 +104,10 @@ void Memory::write(uint16_t address, uint8_t data)
 		memcpy(&m_memory[OAM_OFT], &m_memory[data << 8], 0xA0);
 	}
 	else if (address < 0x8000 || (address >= 0xA000 && address < 0xC000))
+	{
 		// Cartridge-mapped address ranges
-		(m_cartridge.*m_cartridge.write)(address, data);
+		m_cartridge.write(address, data);
+	}
 	else if (address == P1_OFT)
 	{
 		if ((data & 0x10) != 0) // Selected P15

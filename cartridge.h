@@ -1,6 +1,7 @@
 #pragma once
 
 #include <cstdint>
+#include <functional>
 
 class Cartridge;
 typedef void(Cartridge::*WriteHandler) (uint16_t address, uint8_t value);
@@ -25,7 +26,7 @@ public:
 	void loadRom(const char * path);
 
 	uint8_t read(uint16_t address);
-	WriteHandler write;
+	void write(uint16_t address, uint8_t data);
 
 private:
 	CartridgeType m_cartridgeType;
@@ -43,6 +44,8 @@ private:
 	uint8_t m_ROMBankSelector;
 
 	uint8_t m_MBC1Mode;
+
+	std::function<void(Cartridge&, uint16_t, uint8_t)> m_writeFunc;
 
 	void writeROMOnly(uint16_t address, uint8_t value);
 	void writeMBC1(uint16_t address, uint8_t value);
