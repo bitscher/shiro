@@ -1,8 +1,15 @@
 #pragma once
 
-#define BIT_MASK_N(n) (1 << (n))
+#include <cstdint>
 
-#define AND_BIT_N(value, n) ((value) & BIT_MASK_N(n))
+constexpr unsigned int BIT_MASK_N(unsigned int n) { return (1 << n); }
 
-#define SET_BIT_N(value, n) ((value) | BIT_MASK_N(n))
-#define CLEAR_BIT_N(value, n) ((value) & ~BIT_MASK_N(n))
+template<class numtype>
+constexpr numtype AND_BIT_N(numtype value, unsigned int n) { return numtype(value & numtype(BIT_MASK_N(n))); }
+
+template<class numtype>
+constexpr numtype SET_BIT_N(numtype value, unsigned int n) { return numtype(value | numtype(BIT_MASK_N(n))); }
+
+template<class numtype>
+constexpr numtype CLEAR_BIT_N(numtype value, unsigned int n) { return numtype(value & ~(numtype(BIT_MASK_N(n)))); }
+
