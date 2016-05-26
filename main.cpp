@@ -33,7 +33,7 @@ int main( int argc, char * argv[] ) {
 
 	// Emulation classes
 	Memory mem;
-	lr35902_cpu cpu(&mem);
+	lr35902_cpu cpu(mem);
 	Graphics graphics(mem);
 	GamepadHandler gamepad(mem);
 

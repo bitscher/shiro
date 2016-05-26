@@ -12,8 +12,7 @@ typedef uint8_t (lr35902_cpu::*handler) (uint8_t opcode);
 class lr35902_cpu
 {
 public:
-	lr35902_cpu(Memory * memory);
-	~lr35902_cpu();
+	lr35902_cpu(Memory& memory);
 
 	uint8_t update();
 	void run(uint32_t cycles);
@@ -60,7 +59,7 @@ private:
 	uint32_t m_timerDivider = CPU_FREQ;
 	bool m_timerEnabled = false;
 
-	Memory * m_memory;
+	Memory& m_memory;
 
 	uint8_t fetchIR();
 
