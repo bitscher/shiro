@@ -1,7 +1,8 @@
 *.o
 main
-Debug/
-x64/
+build/
+x64/Debug
+x64/Release
 *.vcproj.filters
 *.vcproj.user
 *.vcxproj.user

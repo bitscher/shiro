@@ -14,8 +14,8 @@ Platforms
 Usage
 -----------------------
 shiro [-b] path_to_rom
-
 	-b will try to load the Gameboy bios from file "bios.bin" and play it before running the rom. The file is not included since it is copyrighted.
+
 
 Screenshots
 -----------------------

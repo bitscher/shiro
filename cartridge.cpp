@@ -21,7 +21,8 @@ Cartridge::Cartridge() :
 	m_RAMBanksCount(0),
 	m_RAMWriteEnabled(false),
 	m_ROMBankSelector(0),
-	m_MBC1Mode(0)
+	m_MBC1Mode(0),
+	m_writeFunc(&Cartridge::writeROMOnly)
 {
 }
 
