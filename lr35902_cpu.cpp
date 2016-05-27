@@ -143,8 +143,8 @@ uint8_t lr35902_cpu::handleInterrupts() {
 			write(IF_OFT, CLEAR_BIT_N(requestedInterrupts, i));
 
 			// Stack PC
-			write(--m_registers.SP.w, (uint8_t) (m_registers.PC >> 8));
-			write(--m_registers.SP.w, (uint8_t) (m_registers.PC & 0xFF));
+			write(--m_registers.SP.w, static_cast<uint8_t>(m_registers.PC >> 8));
+			write(--m_registers.SP.w, static_cast<uint8_t>(m_registers.PC & 0xFF));
 
 			// Jump to itVector[i]
 			m_registers.PC = itVector[i];
@@ -253,7 +253,7 @@ uint8_t lr35902_cpu::stop(uint8_t opcode) {
 	return 4;
 }
 uint8_t lr35902_cpu::jr_r8(uint8_t opcode) {
-	int8_t r8 = (int8_t) fetchIR();
+	int8_t r8 = static_cast<int8_t>(fetchIR());
 	switch(opcode) {
 		case 0x18: //JR r8
 			m_registers.PC += r8;
@@ -595,7 +595,7 @@ uint8_t lr35902_cpu::daa(uint8_t opcode) {
 	m_registers.CY = (((correction << 2) & 0x100) != 0);
 	m_registers.H = false;
 
-	m_registers.A = (uint8_t)res;
+	m_registers.A = static_cast<uint8_t>(res);
 
 	m_registers.ZF = (m_registers.A == 0);
 	
@@ -746,12 +746,12 @@ uint8_t lr35902_cpu::adc(uint8_t opcode) {
 
 	res = m_registers.A + rval + carry;
 
-	m_registers.ZF = (((uint8_t)res) == 0);
+	m_registers.ZF = (static_cast<uint8_t>(res) == 0);
 	m_registers.N = false;
 	m_registers.H = ((m_registers.A & 0xF) + (rval & 0xF) + carry) > 0x0F;
 	m_registers.CY = (res > 0xFF);
 
-	m_registers.A = (uint8_t)res;
+	m_registers.A = static_cast<uint8_t>(res);
 
 	return (opcode != 0xCE && opcode != 0x8E) ? 4 : 8;
 }
@@ -770,12 +770,12 @@ uint8_t lr35902_cpu::sbc(uint8_t opcode) {
 
 	res = m_registers.A - rval - carry;
 
-	m_registers.ZF = (((uint8_t)res) == 0);
+	m_registers.ZF = (static_cast<uint8_t>(res) == 0);
 	m_registers.N = true;
 	m_registers.H = ((m_registers.A & 0xF) - (rval & 0xF) - carry) < 0;
 	m_registers.CY = (res < 0);
 
-	m_registers.A = (uint8_t)res;
+	m_registers.A = static_cast<uint8_t>(res);
 
 	return (opcode != 0xDE && opcode != 0x9E) ? 4 : 8;
 }
@@ -893,8 +893,8 @@ uint8_t lr35902_cpu::push(uint8_t opcode) {
 	uint8_t r = (opcode >> 4)&0x03;
 	uint16_t val = getValForReg2b(r);
 
-	write(--m_registers.SP.w, (uint8_t) (val >> 8));
-	write(--m_registers.SP.w, (uint8_t) (val & 0xFF));
+	write(--m_registers.SP.w, static_cast<uint8_t>(val >> 8));
+	write(--m_registers.SP.w, static_cast<uint8_t>(val & 0xFF));
 
 	return 12;
 }
@@ -975,8 +975,8 @@ uint8_t lr35902_cpu::call_a16 (uint8_t opcode) {
 		jpOk = m_registers.CY;
 
 	if (jpOk) {
-		write(--m_registers.SP.w, (uint8_t) (m_registers.PC >> 8));
-		write(--m_registers.SP.w, (uint8_t) (m_registers.PC & 0xFF));
+		write(--m_registers.SP.w, static_cast<uint8_t>(m_registers.PC >> 8));
+		write(--m_registers.SP.w, static_cast<uint8_t>(m_registers.PC & 0xFF));
 		m_registers.PC = a16;
 		return 24;
 	} else
@@ -990,8 +990,8 @@ uint8_t lr35902_cpu::rst(uint8_t opcode) {
 	};
 	uint8_t p = (opcode >> 3)&0x07;
 
-	write(--m_registers.SP.w, (uint8_t) (m_registers.PC >> 8));
-	write(--m_registers.SP.w, (uint8_t) (m_registers.PC & 0xFF));
+	write(--m_registers.SP.w, static_cast<uint8_t>(m_registers.PC >> 8));
+	write(--m_registers.SP.w, static_cast<uint8_t>(m_registers.PC & 0xFF));
 	m_registers.PC = address[p];
 
 	return 16;
@@ -1011,7 +1011,7 @@ uint8_t lr35902_cpu::ei(uint8_t opcode) {
 
 uint8_t lr35902_cpu::add_sp_r8(uint8_t opcode) {
 	(void) opcode;
-	int8_t offset = (int8_t) fetchIR();
+	int8_t offset = static_cast<int8_t>(fetchIR());
 	uint16_t SP = m_registers.SP.w;
 	m_registers.SP.w += offset;
 
@@ -1030,7 +1030,7 @@ uint8_t lr35902_cpu::jp_hl(uint8_t opcode) {
 
 uint8_t lr35902_cpu::ldhl_spr8(uint8_t opcode) {
 	(void) opcode;
-	int8_t r8 = (int8_t) fetchIR();
+	int8_t r8 = static_cast<int8_t>(fetchIR());
 	m_registers.HL.w = m_registers.SP.w + r8;
 
 	m_registers.ZF = false;

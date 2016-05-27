@@ -45,7 +45,7 @@ void Graphics::drawBG(uint8_t currentLine)
 			uint8_t tileIdx = m_memory[bgTileMapAddress + tileCoordY * 32 + tileCoordX];
 
 			if (tileDataAddress == TILE_DATA1_OFT)
-				tileIdx = 128 + ((int8_t) tileIdx);
+				tileIdx = 128 + static_cast<int8_t>(tileIdx);
 
 			//Fetch the right tile byte for this tile index
 			uint8_t tileDataLower = m_memory[tileDataAddress + tileIdx * 16 + lineOffset];
@@ -97,7 +97,7 @@ void Graphics::drawWin(uint8_t currentLine)
 				uint8_t tileIdx = m_memory[winTileMapAddress + tileCoordY * 32 + tileCoordX];
 
 				if (tileDataAddress == TILE_DATA1_OFT)
-					tileIdx = 128 + ((int8_t) tileIdx);
+					tileIdx = 128 + static_cast<int8_t>(tileIdx);
 
 				//Fetch the right tile byte for this tile index
 				uint8_t tileDataLower = m_memory[tileDataAddress + tileIdx * 16 + lineOffset];
@@ -144,7 +144,7 @@ void Graphics::drawObj(uint8_t currentLine)
 			spriteHeight = 8;
 			spriteSizeBytes = 2 * 8;
 		}
-		OAM_Entry *oam = (OAM_Entry*) &m_memory[OAM_OFT];
+		OAM_Entry *oam = reinterpret_cast<OAM_Entry*>(&m_memory[OAM_OFT]);
 		
 
 		uint8_t curSpriteXPosForPix[160]; // Keep the index
@@ -234,7 +234,7 @@ void Graphics::fillSpriteDebugBuffer()
 			m_spriteDebugBuffer[line][col][2] = 0x70;
 		}
 
-	OAM_Entry *oam = (OAM_Entry*)&m_memory[OAM_OFT];
+	OAM_Entry *oam = reinterpret_cast<OAM_Entry*>(&m_memory[OAM_OFT]);
 
 	// Hardware limit to 10 sprites per scanline
 	for (uint8_t sprite = 0; sprite < 40; ++sprite)
@@ -326,7 +326,7 @@ void Graphics::setLCDOperationMode(lcd_mode_t mode)
 	}
 
 	m_currentLCDMode = mode;
-	m_memory[STAT_OFT] = (m_memory[STAT_OFT] & 0xFC) | ((uint8_t) mode);
+	m_memory[STAT_OFT] = (m_memory[STAT_OFT] & 0xFC) | static_cast<uint8_t>(mode);
 }
 
 void Graphics::incrementY()

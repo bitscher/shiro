@@ -35,7 +35,7 @@ void Display::render() {
 
 	int pitch;
 	void * screenTexture;
-	SDL_LockTexture(m_sdlTexture, NULL, (void**)&screenTexture, &pitch);
+	SDL_LockTexture(m_sdlTexture, NULL, static_cast<void**>(&screenTexture), &pitch);
 
 	std::memcpy(screenTexture, m_graphics.getScreenBuffer(), m_graphics.getScreenBufferSize());
 
@@ -50,7 +50,7 @@ void Display::renderSpriteDebug() {
 
 	int pitch;
 	void * spriteDebugTexture;
-	SDL_LockTexture(m_sdlTextureSpriteDebug, NULL, (void**)&spriteDebugTexture, &pitch);
+	SDL_LockTexture(m_sdlTextureSpriteDebug, NULL, static_cast<void**>(&spriteDebugTexture), &pitch);
 
 	std::memcpy(spriteDebugTexture, m_graphics.getSpriteDebugBuffer(), m_graphics.getSpriteDebugBufferSize());
 

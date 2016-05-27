@@ -56,9 +56,9 @@ void Cartridge::loadRom(const char * path) {
 	}
 
 	romFile.seekg(0x148, std::ios_base::beg);
-	unsigned int romSize = (unsigned int)romFile.peek();
-	if (romSize <= 6)
-		m_ROMBanksCount = (unsigned int)std::pow(2, romSize + 1);
+	int romSize = romFile.peek();
+	if (romSize >= 0 && romSize <= 6)
+		m_ROMBanksCount = static_cast<unsigned int>(std::pow(2, romSize + 1));
 	/* FIXME IMPLEMENT THOSE PROPERLY, SOME BANK NUMBERS ARE NOT USABLE
 		NEED TO HANDLE OFFSETTED BANK INDICES
 	else if (romSize == 0x52)
@@ -83,11 +83,11 @@ void Cartridge::loadRom(const char * path) {
 	for (unsigned int bankIdx = 0; bankIdx < m_ROMBanksCount && romFile; ++bankIdx)
 	{
 		m_ROMBanks[bankIdx] = new uint8_t[0x4000]();
-		romFile.read((char*)m_ROMBanks[bankIdx], 0x4000);
+		romFile.read(reinterpret_cast<char*>(m_ROMBanks[bankIdx]), 0x4000);
 	}
 
 	m_currentROMBank = m_ROMBanks[m_ROMBanksCount >= 2 ? 1 : 0];
-	m_cartridgeType = (CartridgeType) m_ROMBanks[0][0x147];
+	m_cartridgeType = static_cast<CartridgeType>(m_ROMBanks[0][0x147]);
 
 	if (m_cartridgeType >= MAX_SUPPORTED_TYPE)
 	{
@@ -95,11 +95,11 @@ void Cartridge::loadRom(const char * path) {
 	}
 	else if (romFile)
 	{
-		printf("Read %ld bytes from rom\n", (long int) romFile.gcount());
+		printf("Read %ld bytes from rom\n", static_cast<long int>(romFile.gcount()));
 		printf("Cartridge Type: (%u) %s\n", m_cartridgeType, CartridgeTypeDesc[m_cartridgeType]);
 	}
 	else
-		fprintf(stderr, "Error: Read only %ld bytes from rom\n", (long int) romFile.gcount());
+		fprintf(stderr, "Error: Read only %ld bytes from rom\n", static_cast<long int>(romFile.gcount()));
 
 	romFile.close();
 
@@ -173,7 +173,7 @@ void Cartridge::writeMBC1(uint16_t address, uint8_t value)
 		// Switch ROM Bank
 		m_ROMBankSelector = (m_ROMBankSelector & 0xE0) | (value & 0x1F);
 		if (m_ROMBankSelector < m_ROMBanksCount)
-			m_currentROMBank = m_ROMBanks[std::max((uint8_t)1, m_ROMBankSelector)];
+			m_currentROMBank = m_ROMBanks[std::max(static_cast<uint8_t>(1), m_ROMBankSelector)];
 	}
 	else if (address < 0x2000)
 	{
@@ -186,7 +186,7 @@ void Cartridge::writeMBC1(uint16_t address, uint8_t value)
 			//Two most significant bits of the ROM bank selection
 			m_ROMBankSelector = (m_ROMBankSelector & 0x1F) | ((value & 0x3) << 5);
 			if (m_ROMBankSelector < m_ROMBanksCount)
-				m_currentROMBank = m_ROMBanks[std::max((uint8_t)1, m_ROMBankSelector)];
+				m_currentROMBank = m_ROMBanks[std::max(static_cast<uint8_t>(1), m_ROMBankSelector)];
 		}
 		else // 4/32 Mode
 		{

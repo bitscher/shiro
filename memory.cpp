@@ -63,7 +63,7 @@ void Memory::initialize()
 
 		if (bootROM.good())
 		{
-			bootROM.read((char*)&m_bootROM, 256);
+			bootROM.read(reinterpret_cast<char*>(&m_bootROM), 256);
 			m_bootROMEnabled = true;
 		}
 	}

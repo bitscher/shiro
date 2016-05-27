@@ -32,10 +32,10 @@ public:
 	bool shouldStartVBlank() { return m_memory[LCDC_Y_OFT] >= 143; }
 	inline bool isLCDEnabled() { return AND_BIT_N(m_memory[LCDC_OFT], 7) != 0; }
 
-	void* getScreenBuffer() { return (void*) m_screenBuffer; }
+	void* getScreenBuffer() { return static_cast<void*>(m_screenBuffer); }
 	uint32_t getScreenBufferSize() { return sizeof(m_screenBuffer); }
 	
-	void* getSpriteDebugBuffer() { return (void*)m_spriteDebugBuffer; }
+	void* getSpriteDebugBuffer() { return static_cast<void*>(m_spriteDebugBuffer); }
 	uint32_t getSpriteDebugBufferSize() { return sizeof(m_spriteDebugBuffer); }
 	void fillSpriteDebugBuffer();
 
