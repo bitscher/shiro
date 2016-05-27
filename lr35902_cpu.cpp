@@ -15,7 +15,7 @@
 #endif
 
 
-handler lr35902_cpu::handlers[] = {
+lr35902_cpu::instructionHandler lr35902_cpu::handlers[] = {
 	/*		0						1						2						3						4							5						6						7						8							9						A							B						C							D						E						F */
 	/* 0 */	&lr35902_cpu::nop,		&lr35902_cpu::ld_d16,	&lr35902_cpu::ld_a,		&lr35902_cpu::inc_16,	&lr35902_cpu::inc_8,		&lr35902_cpu::dec_8,	&lr35902_cpu::ld_d8,	&lr35902_cpu::rlca,		&lr35902_cpu::ld_a16_sp,	&lr35902_cpu::add_hl,	&lr35902_cpu::ld_a,			&lr35902_cpu::dec_16,	&lr35902_cpu::inc_8,		&lr35902_cpu::dec_8,	&lr35902_cpu::ld_d8,	&lr35902_cpu::rrca,
 	/* 1 */	&lr35902_cpu::stop,		&lr35902_cpu::ld_d16,	&lr35902_cpu::ld_a,		&lr35902_cpu::inc_16,	&lr35902_cpu::inc_8,		&lr35902_cpu::dec_8,	&lr35902_cpu::ld_d8,	&lr35902_cpu::rla,		&lr35902_cpu::jr_r8,		&lr35902_cpu::add_hl,	&lr35902_cpu::ld_a,			&lr35902_cpu::dec_16,	&lr35902_cpu::inc_8,		&lr35902_cpu::dec_8,	&lr35902_cpu::ld_d8,	&lr35902_cpu::rra,
@@ -35,7 +35,7 @@ handler lr35902_cpu::handlers[] = {
 	/* F */	&lr35902_cpu::ldh,	 	&lr35902_cpu::pop,		&lr35902_cpu::ld_a,		&lr35902_cpu::di,		&lr35902_cpu::invalid,		&lr35902_cpu::push,		&lr35902_cpu::or_a,		&lr35902_cpu::rst,		&lr35902_cpu::ldhl_spr8,	&lr35902_cpu::ld_sp_hl,	&lr35902_cpu::ld_a_a16,		&lr35902_cpu::ei,		&lr35902_cpu::invalid,		&lr35902_cpu::invalid,	&lr35902_cpu::cp,		&lr35902_cpu::rst
 };
 
-handler lr35902_cpu::cb_handlers[] = {
+lr35902_cpu::instructionHandler lr35902_cpu::cb_handlers[] = {
 	/*		0						1						2						3						4						5						6						7						8						9						A						B						C						D						E						F */
 	/* 0 */	&lr35902_cpu::rlc,		&lr35902_cpu::rlc,		&lr35902_cpu::rlc,		&lr35902_cpu::rlc,		&lr35902_cpu::rlc,		&lr35902_cpu::rlc,		&lr35902_cpu::rlc,		&lr35902_cpu::rlc,		&lr35902_cpu::rrc,		&lr35902_cpu::rrc,		&lr35902_cpu::rrc,		&lr35902_cpu::rrc,		&lr35902_cpu::rrc,		&lr35902_cpu::rrc,		&lr35902_cpu::rrc,		&lr35902_cpu::rrc,
 	/* 1 */	&lr35902_cpu::rl,		&lr35902_cpu::rl,		&lr35902_cpu::rl,		&lr35902_cpu::rl,		&lr35902_cpu::rl,		&lr35902_cpu::rl,		&lr35902_cpu::rl,		&lr35902_cpu::rl,		&lr35902_cpu::rr,		&lr35902_cpu::rr,		&lr35902_cpu::rr,		&lr35902_cpu::rr,		&lr35902_cpu::rr,		&lr35902_cpu::rr,		&lr35902_cpu::rr,		&lr35902_cpu::rr,

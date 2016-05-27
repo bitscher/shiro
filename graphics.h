@@ -15,14 +15,14 @@ public:
 	Mode 1 - V-Blank
 	Mode 2 - Reading OAM memory
 	Mode 3 - Reading OAM and VRAM 	*/
-	typedef enum {LCD_MODE0, LCD_MODE1, LCD_MODE2, LCD_MODE3} lcd_mode_t;
+	using lcd_mode_t = enum : uint8_t {LCD_MODE0, LCD_MODE1, LCD_MODE2, LCD_MODE3};
 
-	typedef struct {
+	using OAM_Entry = struct {
 		uint8_t yPos;
 		uint8_t xPos;
 		uint8_t tileIdx;
 		uint8_t attributeFlags;
-	} OAM_Entry;
+	};
 
 	Graphics(Memory & memory);
 
@@ -44,13 +44,12 @@ private:
 	uint8_t m_spriteDebugBuffer[16][8*40][3];
 	Memory & m_memory;
 
-	void drawLine();
-
 	lcd_mode_t m_currentLCDMode;
 
 // --------------------------
 // Drawing methods
 // --------------------------
+	void drawLine();
 	void drawBG(uint8_t currentLine);
 	void drawWin(uint8_t currentLine);
 	void drawObj(uint8_t currentLine);

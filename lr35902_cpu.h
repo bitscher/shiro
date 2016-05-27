@@ -5,10 +5,6 @@
 #include "memory.h"
 #define CPU_FREQ 4194304
 
-class lr35902_cpu;
-
-typedef uint8_t (lr35902_cpu::*handler) (uint8_t opcode);
-
 class lr35902_cpu
 {
 public:
@@ -18,9 +14,12 @@ public:
 	void run(uint32_t cycles);
 
 private:
+	uint8_t nop(uint8_t opcode);
 
-	static handler handlers[256];
-	static handler cb_handlers[256];
+	using instructionHandler = decltype(&lr35902_cpu::nop);
+
+	static instructionHandler handlers[256];
+	static instructionHandler cb_handlers[256];
 
 	struct registers_t {
 		uint8_t A;			// Accumulator
@@ -70,7 +69,6 @@ private:
 	inline uint16_t getValForReg2b(uint8_t regnum);
 	inline uint8_t getFlags8b();
 
-	uint8_t nop(uint8_t opcode);
 	uint8_t stop(uint8_t opcode);
 	uint8_t jr_r8(uint8_t opcode);
 	uint8_t ld_d16(uint8_t opcode);

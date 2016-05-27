@@ -1,16 +1,17 @@
 #include "controls.h"
-#include <cstdlib>
 
 Controls::Controls(GamepadHandler &gamepadHdlr) : m_GamePadHandler(gamepadHdlr)
 {}
 
 
-void Controls::UpdateEvents()
+void Controls::UpdateEvents(bool &quit)
 {
 	SDL_Event e;
 	SDL_PollEvent(&e);
 	if (e.type == SDL_QUIT)
-		exit(EXIT_SUCCESS);
+	{
+		quit = true;
+	}
 	else if (e.type == SDL_KEYDOWN)
 	{
 		switch (e.key.keysym.sym)

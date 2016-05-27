@@ -20,7 +20,7 @@ class Controls
 public:
 	Controls(GamepadHandler& gamepadHdlr);
 
-	void UpdateEvents();
+	void UpdateEvents(bool &quit);
 
 private:
 	GamepadHandler& m_GamePadHandler;

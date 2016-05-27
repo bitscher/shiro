@@ -43,13 +43,14 @@ int main( int argc, char * argv[] ) {
 
 	mem.getCartridge().loadRom(romPath);
 
-	bool mainLoop = true;
+	bool quit = false;
 
-	while (mainLoop)
+	while (!quit)
 	{
 		auto startTime = high_resolution_clock::now();
 
-		controls.UpdateEvents();
+		//TODO Controls on a parallel thread.
+		controls.UpdateEvents(quit);
 
 		graphics.setLCDOperationMode(Graphics::lcd_mode_t::LCD_MODE2);
 		cpu.run(80);
