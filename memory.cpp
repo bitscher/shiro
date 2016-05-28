@@ -91,7 +91,7 @@ uint8_t Memory::read(uint16_t address)
 
 void Memory::write(uint16_t address, uint8_t data)
 {
-	if (address == 0xFF02 && data == 0x81)
+	if (address == 0xFF02 && data == 0x81) //Serial
 		m_memory[0xFF0F] = SET_BIT_N(m_memory[0xFF0F], 3);
 	else if (address == 0xFF50 && data == 0x01)
 	{
@@ -100,8 +100,11 @@ void Memory::write(uint16_t address, uint8_t data)
 	}
 	else if (address == DMA_OFT)
 	{
-		//TODO Emulate better timing
-		memcpy(&m_memory[OAM_OFT], &m_memory[data << 8], 0xA0);
+		//TODO This should be made in //
+		uint16_t address = static_cast<uint16_t>(data << 8);
+		//std::cout << "DMA from " <<  std::hex << static_cast<unsigned int>(address) << "\n";
+		for(uint8_t i = 0; i < 0xA0; ++i)
+			m_memory[OAM_OFT + i] = read(address + i);
 	}
 	else if (address < 0x8000 || (address >= 0xA000 && address < 0xC000))
 	{

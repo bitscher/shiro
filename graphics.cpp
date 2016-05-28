@@ -132,25 +132,17 @@ void Graphics::drawObj(uint8_t currentLine)
 {
 	if (spritesEnabled())
 	{
-		uint8_t spriteHeight;
-		uint8_t spriteSizeBytes;
-		if (use8x16Sprites())
-		{
-			spriteHeight = 16;
-			spriteSizeBytes = 2 * 16;
-		}
-		else
-		{
-			spriteHeight = 8;
-			spriteSizeBytes = 2 * 8;
-		}
-		OAM_Entry *oam = reinterpret_cast<OAM_Entry*>(&m_memory[OAM_OFT]);
-		
+		const uint8_t spriteSizeBytes = 2 * 8;
+		bool use8x16 = use8x16Sprites();
 
-		uint8_t curSpriteXPosForPix[160]; // Keep the index
-		int16_t rowPixelsColors[160];
-		memset(curSpriteXPosForPix, 255, sizeof(curSpriteXPosForPix));
-		memset(rowPixelsColors, 0xFF, sizeof(rowPixelsColors));
+		uint8_t spriteHeight = (use8x16) ? 16 : 8;
+
+		OAM_Entry *oam = reinterpret_cast<OAM_Entry*>(&m_memory[OAM_OFT]);
+
+		std::array<uint8_t, 160> curSpriteXPosForPix; // Keep the index
+		std::array<int16_t, 160> rowPixelsColors;
+		curSpriteXPosForPix.fill(0xFF);
+		rowPixelsColors.fill(-1);
 
 		// Hardware limit to 10 sprites per scanline
 		for(uint8_t sprite = 0, spritesShown = 0; sprite < 40 && spritesShown < 10; ++sprite)
@@ -163,17 +155,16 @@ void Graphics::drawObj(uint8_t currentLine)
 				if (currentLine < upperY || (currentLine - upperY) >= spriteHeight)
 					continue; // Sprite will not show on this scanline
 
-				uint16_t paletteOffset = AND_BIT_N(curSprite.attributeFlags, 4) ? OBJ1PAL_OFT : OBJ0PAL_OFT;
-				uint8_t palette = m_memory[paletteOffset];
-				bool drawOnTop = AND_BIT_N(curSprite.attributeFlags, 7) == 0;
+				uint8_t palette = m_memory[curSprite.getPalette() ? OBJ1PAL_OFT : OBJ0PAL_OFT];
+				bool drawOnTop = !curSprite.getPriority();
 
 				// Fetch the correct tile data
-				uint8_t tileDataLower = m_memory[SPRITE_DATA_OFT + spriteSizeBytes * curSprite.tileIdx + (currentLine - upperY) * 2];
-				uint8_t tileDataUpper = m_memory[SPRITE_DATA_OFT + spriteSizeBytes * curSprite.tileIdx + (currentLine - upperY) * 2 + 1];
+				uint8_t tileIdx = (use8x16) ? (curSprite.tileIdx & 0xFE) : curSprite.tileIdx;
+				uint8_t tileDataLower = m_memory[SPRITE_DATA_OFT + spriteSizeBytes * tileIdx + (currentLine - upperY) * 2];
+				uint8_t tileDataUpper = m_memory[SPRITE_DATA_OFT + spriteSizeBytes * tileIdx + (currentLine - upperY) * 2 + 1];
 
-				if (AND_BIT_N(curSprite.attributeFlags, 5) != 0) // X Flip
+				if (curSprite.isXFlipped()) // X Flip
 				{
-					//uint8_t tmp = tileDataLower;
 					tileDataLower = BitReverseTable256[tileDataLower];
 					tileDataUpper = BitReverseTable256[tileDataUpper];
 				}
@@ -224,26 +215,28 @@ void Graphics::drawObj(uint8_t currentLine)
 void Graphics::fillSpriteDebugBuffer()
 {
 	uint8_t spriteHeight = use8x16Sprites() ? 16 : 8;
-	uint8_t spriteSizeBytes = 2 * spriteHeight;
+	const uint8_t spriteSizeBytes = 2 * 8;
 
+	// Background color
 	for (uint8_t line = 0; line < 16; ++line)
+	{
 		for (uint16_t col = 0; col < 320; ++col)
 		{
 			m_spriteDebugBuffer[line][col][0] = 0x00;
 			m_spriteDebugBuffer[line][col][1] = 0xA0;
 			m_spriteDebugBuffer[line][col][2] = 0x70;
 		}
+	}
 
 	OAM_Entry *oam = reinterpret_cast<OAM_Entry*>(&m_memory[OAM_OFT]);
 
-	// Hardware limit to 10 sprites per scanline
 	for (uint8_t sprite = 0; sprite < 40; ++sprite)
 	{
 		OAM_Entry &curSprite = oam[sprite];
 
 		for (unsigned int line = 0; line < spriteHeight; ++line)
 		{
-			uint16_t paletteOffset = AND_BIT_N(curSprite.attributeFlags, 4) ? OBJ1PAL_OFT : OBJ0PAL_OFT;
+			const uint16_t paletteOffset = curSprite.getPalette() ? OBJ1PAL_OFT : OBJ0PAL_OFT;
 			uint8_t palette = m_memory[paletteOffset];
 
 			// Fetch the correct tile data
@@ -251,9 +244,8 @@ void Graphics::fillSpriteDebugBuffer()
 			uint8_t tileDataLower = m_memory[SPRITE_DATA_OFT + spriteSizeBytes * tileIdx + line * 2];
 			uint8_t tileDataUpper = m_memory[SPRITE_DATA_OFT + spriteSizeBytes * tileIdx + line * 2 + 1];
 
-			if (AND_BIT_N(curSprite.attributeFlags, 5) != 0) // X Flip
+			if (curSprite.isXFlipped()) // X Flip
 			{
-				//uint8_t tmp = tileDataLower;
 				tileDataLower = BitReverseTable256[tileDataLower];
 				tileDataUpper = BitReverseTable256[tileDataUpper];
 			}
