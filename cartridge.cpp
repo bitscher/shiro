@@ -15,33 +15,13 @@ const char* Cartridge::CartridgeTypeDesc[] = {
 
 Cartridge::Cartridge() :
 	m_cartridgeType(ROM_ONLY),
-	m_currentROMBank(nullptr),
-	m_currentRAMBank(nullptr),
-	m_ROMBanksCount(0),
-	m_RAMBanksCount(0),
+	m_currentROMBank(1),
+	m_currentRAMBank(0),
 	m_RAMWriteEnabled(false),
 	m_ROMBankSelector(0),
 	m_MBC1Mode(0),
 	m_writeFunc(&Cartridge::writeROMOnly)
 {
-}
-
-Cartridge::~Cartridge()
-{
-	for (unsigned int bankIdx = 0; bankIdx < m_ROMBanksCount; ++bankIdx)
-	{
-		if (m_ROMBanks[bankIdx] != nullptr)
-			delete[] m_ROMBanks[bankIdx];
-	}
-
-	for (unsigned int bankIdx = 0; bankIdx < m_RAMBanksCount; ++bankIdx)
-	{
-		if (m_RAMBanks[bankIdx] != nullptr)
-			delete[] m_RAMBanks[bankIdx];
-	}
-
-	delete[] m_ROMBanks;
-	delete[] m_RAMBanks;
 }
 
 void Cartridge::loadRom(const char * path) {
@@ -55,18 +35,20 @@ void Cartridge::loadRom(const char * path) {
 		return;
 	}
 
+	unsigned int ROMBanksCount = 1;
+
 	romFile.seekg(0x148, std::ios_base::beg);
 	int romSize = romFile.peek();
 	if (romSize >= 0 && romSize <= 6)
-		m_ROMBanksCount = static_cast<unsigned int>(std::pow(2, romSize + 1));
+		ROMBanksCount = static_cast<unsigned int>(std::pow(2, romSize + 1));
 	/* FIXME IMPLEMENT THOSE PROPERLY, SOME BANK NUMBERS ARE NOT USABLE
 		NEED TO HANDLE OFFSETTED BANK INDICES
 	else if (romSize == 0x52)
-		m_ROMBanksCount = 72;
+		ROMBanksCount = 72;
 	else if (romSize == 0x53)
-		m_ROMBanksCount = 80;
+		ROMBanksCount = 80;
 	else if (romSize == 0x54)
-		m_ROMBanksCount = 96;
+		ROMBanksCount = 96;
 	*/
 	else
 	{
@@ -74,20 +56,20 @@ void Cartridge::loadRom(const char * path) {
 		exit(-1);
 	}
 
-	printf("ROM size: %u ROM banks\n", m_ROMBanksCount);
+	printf("ROM size: %u ROM banks\n", ROMBanksCount);
 
 	romFile.seekg(std::ios_base::beg);
 
-	m_ROMBanks = new uint8_t*[m_ROMBanksCount]();
+	m_ROMBanks.reserve(ROMBanksCount);
 	//Read the ROM banks
-	for (unsigned int bankIdx = 0; bankIdx < m_ROMBanksCount && romFile; ++bankIdx)
+	for (unsigned int bankIdx = 0; bankIdx < ROMBanksCount && romFile; ++bankIdx)
 	{
-		m_ROMBanks[bankIdx] = new uint8_t[0x4000]();
-		romFile.read(reinterpret_cast<char*>(m_ROMBanks[bankIdx]), 0x4000);
+		m_ROMBanks.emplace_back(MemoryBank<0x4000>());
+		romFile.read(reinterpret_cast<char*>(m_ROMBanks[bankIdx].bytes), 0x4000);
 	}
 
-	m_currentROMBank = m_ROMBanks[m_ROMBanksCount >= 2 ? 1 : 0];
-	m_cartridgeType = static_cast<CartridgeType>(m_ROMBanks[0][0x147]);
+	m_currentROMBank = ROMBanksCount >= 2 ? 1 : 0;
+	m_cartridgeType = static_cast<CartridgeType>(m_ROMBanks[0].bytes[0x147]);
 
 	if (m_cartridgeType >= MAX_SUPPORTED_TYPE)
 	{
@@ -103,22 +85,24 @@ void Cartridge::loadRom(const char * path) {
 
 	romFile.close();
 
-	switch (m_ROMBanks[0][0x149]) // RAM size
+	uint8_t RAMBanksCount = 0;
+
+	switch (m_ROMBanks[0].bytes[0x149]) // RAM size
 	{
 	case 1:
-	case 2: m_RAMBanksCount = 1; break;
-	case 3: m_RAMBanksCount = 4; break;
-	case 4: m_RAMBanksCount = 16; break;
+	case 2: RAMBanksCount = 1; break;
+	case 3: RAMBanksCount = 4; break;
+	case 4: RAMBanksCount = 16; break;
 	}
-	printf("RAM size: %u RAM banks\n", m_RAMBanksCount);
+	printf("RAM size: %u RAM banks\n", RAMBanksCount);
 
-	if (m_RAMBanksCount > 0)
+	if (RAMBanksCount > 0)
 	{
-		m_RAMBanks = new uint8_t*[m_RAMBanksCount]();
-		for (unsigned int i = 0; i < m_RAMBanksCount; ++i)
-			m_RAMBanks[i] = new uint8_t[0x2000];
+		m_RAMBanks.reserve(RAMBanksCount);
+		for (unsigned int i = 0; i < RAMBanksCount; ++i)
+			m_RAMBanks.emplace_back(MemoryBank<0x2000>());
 
-		m_currentRAMBank = m_RAMBanks[0];
+		m_currentRAMBank = 0;
 	}
 	
 	switch (m_cartridgeType)
@@ -141,11 +125,11 @@ void Cartridge::loadRom(const char * path) {
 uint8_t Cartridge::read(uint16_t address)
 {
 	if (address < 0x4000)
-		return m_ROMBanks[0][address];
+		return m_ROMBanks[0].bytes[address];
 	else if (address < 0x8000) // Read in switchable bank
-		return m_currentROMBank[address - 0x4000];
-	else if (address >= 0xA000 && address < 0xC000 && m_currentRAMBank != nullptr) // Read in switchable ram bank
-		return m_currentRAMBank[address- 0xA000];
+		return m_ROMBanks[m_currentROMBank].bytes[address - 0x4000];
+	else if (address >= 0xA000 && address < 0xC000 && m_RAMBanks.size() > 0) // Read in switchable ram bank
+		return m_RAMBanks[m_currentRAMBank].bytes[address - 0xA000];
 	else
 	{
 		DEBUG_ONLY(fprintf(stderr, "Illegal read in Catridge at address 0x%04X\n", address););
@@ -172,8 +156,8 @@ void Cartridge::writeMBC1(uint16_t address, uint8_t value)
 	{
 		// Switch ROM Bank
 		m_ROMBankSelector = (m_ROMBankSelector & 0xE0) | (value & 0x1F);
-		if (m_ROMBankSelector < m_ROMBanksCount)
-			m_currentROMBank = m_ROMBanks[std::max(static_cast<uint8_t>(1), m_ROMBankSelector)];
+		if (m_ROMBankSelector < m_ROMBanks.size())
+			m_currentROMBank = std::max(static_cast<uint8_t>(1), m_ROMBankSelector);
 	}
 	else if (address < 0x2000)
 	{
@@ -185,20 +169,20 @@ void Cartridge::writeMBC1(uint16_t address, uint8_t value)
 		{
 			//Two most significant bits of the ROM bank selection
 			m_ROMBankSelector = (m_ROMBankSelector & 0x1F) | ((value & 0x3) << 5);
-			if (m_ROMBankSelector < m_ROMBanksCount)
-				m_currentROMBank = m_ROMBanks[std::max(static_cast<uint8_t>(1), m_ROMBankSelector)];
+			if (m_ROMBankSelector < m_ROMBanks.size())
+				m_currentROMBank = std::max(static_cast<uint8_t>(1), m_ROMBankSelector);
 		}
 		else // 4/32 Mode
 		{
 			// Switch RAM bank
 			unsigned int bankNumber = value & 0x3;
-			if (bankNumber < m_RAMBanksCount)
-				m_currentRAMBank = m_RAMBanks[bankNumber];
+			if (bankNumber < m_RAMBanks.size())
+				m_currentRAMBank = bankNumber;
 		}
 	}
 	else if (address >= 0xA000 && address < 0xC000 && m_RAMWriteEnabled)
 	{
-		m_currentRAMBank[address - 0xA000] = value;
+		m_RAMBanks[m_currentRAMBank].bytes[address - 0xA000] = value;
 	}
 }
 

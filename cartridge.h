@@ -2,6 +2,7 @@
 
 #include <cstdint>
 #include <functional>
+#include <vector>
 
 class Cartridge
 {
@@ -16,9 +17,12 @@ class Cartridge
 	
 	static const char* CartridgeTypeDesc[];
 
+	template<unsigned int size>
+	struct MemoryBank { uint8_t bytes[size]; };
+
 public:
 	Cartridge();
-	~Cartridge();
+	~Cartridge() = default;
 
 	void loadRom(const char * path);
 
@@ -27,15 +31,12 @@ public:
 
 private:
 	CartridgeType m_cartridgeType;
-
-	uint8_t* m_currentROMBank;
-	uint8_t* m_currentRAMBank;
-
-	unsigned int m_ROMBanksCount;
-	unsigned int m_RAMBanksCount;
 	
-	uint8_t** m_ROMBanks;
-	uint8_t** m_RAMBanks;
+	std::vector<MemoryBank<0x4000>> m_ROMBanks;
+	std::vector<MemoryBank<0x2000>> m_RAMBanks;
+
+	uint8_t m_currentROMBank;
+	uint8_t m_currentRAMBank;
 
 	bool m_RAMWriteEnabled;
 	uint8_t m_ROMBankSelector;
