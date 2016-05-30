@@ -1,5 +1,6 @@
 #include "graphics.h"
 
+#include <array>
 #include <cstring>
 #include <iostream>
 

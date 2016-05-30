@@ -7,7 +7,7 @@ It currently only support the original DMG Gameboy.
 
 Platforms
 -----------------------
-* Windows (included Visual Studio 2013 Project)
+* Windows (Visual Studio 2015 Project included)
 * Linux (Makefile included)
 * Probably any system that can be targeted by a C++11 compiler and for which SDL has been ported
 
