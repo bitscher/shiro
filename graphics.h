@@ -81,9 +81,9 @@ private:
 	inline bool isWindowDisplayEnabled() { return AND_BIT_N(m_memory[LCDC_OFT], 5) != 0; }
 	inline uint16_t getTileDataAddress() { return AND_BIT_N(m_memory[LCDC_OFT], 4) ? TILE_DATA2_OFT : TILE_DATA1_OFT; }
 	inline uint16_t getBGTileMapAddress() { return AND_BIT_N(m_memory[LCDC_OFT], 3) ? TILE_MAP2_OFT : TILE_MAP1_OFT; }
-	inline uint8_t use8x16Sprites() { return AND_BIT_N(m_memory[LCDC_OFT], 2); }
+	inline bool use8x16Sprites() { return AND_BIT_N(m_memory[LCDC_OFT], 2) != 0; }
 	inline bool spritesEnabled() { return AND_BIT_N(m_memory[LCDC_OFT], 1) != 0; }
-	inline bool displayBGEnabled() { return AND_BIT_N(m_memory[LCDC_OFT], 0); }
+	inline bool displayBGEnabled() { return AND_BIT_N(m_memory[LCDC_OFT], 0) != 0; }
 
 // LCD Status Register
 	inline bool isCoincidenceInterrupt() { return AND_BIT_N(m_memory[STAT_OFT], 6) != 0; }
