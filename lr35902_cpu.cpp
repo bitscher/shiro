@@ -3,8 +3,8 @@
 #include "bitwiseop.h"
 
 #include <iostream>
-#define SWITCHDEFAULTERR(func, opcode) default: std::cerr << "Error in " << func << "(): unknown opcode: " << opcode << std::endl;
-#define OPCODEERROR(func, opcode) std::cerr << "Error in " << func << "(): unknown opcode: " << opcode << std::endl;
+#define SWITCHDEFAULTERR(func, opcode) default: fprintf(stderr,  "Error in %s(): unknown opcode: 0x%02X\n", func, opcode);
+#define OPCODEERROR(func, opcode) fprintf(stderr,  "Error in %s(): unknown opcode: 0x%02X\n", func, opcode);
 #define NOTIMPLEMENTED(func) std::cerr << "Error: " << func << "() not implemented" << std::endl;
 
 #ifdef _DEBUG_DISPLAY
