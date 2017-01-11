@@ -21,15 +21,21 @@ class Cartridge
 
 	template<unsigned int size>
 	struct MemoryBank { uint8_t bytes[size]; };
+	
+	inline bool cartridgeHasBattery() {
+		return m_cartridgeType == ROM_RAM_BATT || m_cartridgeType == ROM_MBC1_RAM_BATT || m_cartridgeType == ROM_MBC2_BATT;
+	}
 
 public:
 	Cartridge();
 	~Cartridge() = default;
 
-	void loadRom(const char * path);
+	bool loadRom(const std::string& path);
 
 	uint8_t read(uint16_t address);
 	void write(uint16_t address, uint8_t data);
+
+	void saveRAMToFile(const std::string& romPath);
 
 private:
 	CartridgeType m_cartridgeType;

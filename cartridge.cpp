@@ -28,15 +28,15 @@ Cartridge::Cartridge() :
 	m_MBC2InternalRAM = {};
 }
 
-void Cartridge::loadRom(const char * path) {
+bool Cartridge::loadRom(const std::string& path) {
 	std::ifstream romFile;
 
 	romFile.open(path, std::ios_base::in | std::ios_base::binary);
 
 	if (!romFile.is_open())
 	{
-		fprintf(stderr, "Could not open rom %s\n", path);
-		return;
+		fprintf(stderr, "Could not open rom %s\n", path.c_str());
+		return false;
 	}
 
 	unsigned int ROMBanksCount = 1;
@@ -54,7 +54,7 @@ void Cartridge::loadRom(const char * path) {
 	else
 	{
 		fprintf(stderr, "Unknown ROM Size (0x148) = %u\n", romSize);
-		exit(-1);
+		return false;
 	}
 
 	printf("ROM size: %u ROM banks\n", ROMBanksCount);
@@ -75,6 +75,7 @@ void Cartridge::loadRom(const char * path) {
 	if (m_cartridgeType >= MAX_SUPPORTED_TYPE)
 	{
 		fprintf(stderr, "Error: Unknown cartridge type: %u\n", m_cartridgeType);
+		return false;
 	}
 	else if (romFile)
 	{
@@ -82,7 +83,10 @@ void Cartridge::loadRom(const char * path) {
 		printf("Cartridge Type: (%u) %s\n", m_cartridgeType, CartridgeTypeDesc[m_cartridgeType]);
 	}
 	else
+	{
 		fprintf(stderr, "Error: Read only %ld bytes from rom\n", static_cast<long int>(romFile.gcount()));
+		return false;
+	}
 
 	romFile.close();
 
@@ -129,6 +133,28 @@ void Cartridge::loadRom(const char * path) {
 		break;
 	}
 
+	//Load .sav file if it exists
+	if (cartridgeHasBattery())
+	{
+		std::ifstream savFile;
+		savFile.open(path + ".sav", std::ios_base::in | std::ios_base::binary);
+		if (savFile.is_open())
+		{
+			if (m_cartridgeType == ROM_MBC2_BATT)
+			{
+				savFile.read(reinterpret_cast<char*>(m_MBC2InternalRAM.bytes), sizeof(m_MBC2InternalRAM.bytes));
+			}
+			else
+			{
+				for (unsigned int i = 0; i < m_RAMBanks.size(); ++i)
+					savFile.read(reinterpret_cast<char*>(m_RAMBanks[i].bytes), sizeof(m_RAMBanks[i].bytes));
+			}
+
+			savFile.close();
+		}
+	}
+
+	return true;
 }
 
 uint8_t Cartridge::read(uint16_t address)
@@ -243,4 +269,33 @@ void Cartridge::writeMBC2(uint16_t address, uint8_t value)
 	{
 		DEBUG_ONLY(fprintf(stderr, "Illegal write in Catridge at address 0x%04X\n", address););
 	}
+}
+
+void Cartridge::saveRAMToFile(const std::string& romPath)
+{
+	if (!cartridgeHasBattery())
+		return;
+
+	std::ofstream savFile;
+
+	savFile.open(romPath + ".sav", std::ios_base::out | std::ios_base::binary);
+	if (!savFile.is_open())
+	{
+		fprintf(stderr, "Could not create sav file at %s.sav\n", romPath.c_str());
+		return;
+	}
+
+	if (m_cartridgeType == ROM_MBC2_BATT)
+	{
+		savFile.write(reinterpret_cast<const char*>(m_MBC2InternalRAM.bytes), sizeof(m_MBC2InternalRAM.bytes));
+	}
+	else
+	{
+		for (const auto& bank : m_RAMBanks)
+		{
+			savFile.write(reinterpret_cast<const char*>(bank.bytes), sizeof(bank.bytes));
+		}
+	}
+
+	savFile.close();
 }

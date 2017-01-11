@@ -19,7 +19,7 @@ int main( int argc, char * argv[] ) {
 	if (argc < 2)
 		return -1;
 
-	char * romPath = NULL;
+	std::string romPath;
 
 	Config &conf = Config::getInstance();
 
@@ -41,7 +41,8 @@ int main( int argc, char * argv[] ) {
 	Display renderer(graphics);
 	Controls controls(gamepad);
 
-	mem.getCartridge().loadRom(romPath);
+	if (!mem.getCartridge().loadRom(romPath))
+		return -1;
 
 	bool quit = false;
 
@@ -89,6 +90,7 @@ int main( int argc, char * argv[] ) {
 		}
 	}
 
-	return 0;
+	mem.getCartridge().saveRAMToFile(romPath);
 
+	return 0;
 }
