@@ -3,9 +3,11 @@
 
 #include <cstring>
 
+#define SCREEN_SCALING 2
+
 Display::Display(Graphics &graphics) : m_graphics(graphics) {
 	SDL_Init(SDL_INIT_VIDEO);
-	SDL_CreateWindowAndRenderer(160, 144, 0, &m_sdlWindow, &m_sdlRenderer);
+	SDL_CreateWindowAndRenderer(160 * SCREEN_SCALING, 144 * SCREEN_SCALING, 0, &m_sdlWindow, &m_sdlRenderer);
 	SDL_SetWindowTitle(m_sdlWindow, "Shiro");
 
 	m_sdlTexture = SDL_CreateTexture(m_sdlRenderer,SDL_PIXELFORMAT_RGB24, SDL_TEXTUREACCESS_STREAMING, 160, 144);
