@@ -25,7 +25,7 @@ Cartridge::Cartridge() :
 	m_writeFunc(&Cartridge::writeROMOnly),
 	m_readFunc(&Cartridge::readMBC1)
 {
-	m_MBC2InternalRAM = {};
+	m_MBC2InternalRAM = {0};
 }
 
 bool Cartridge::loadRom(const std::string& path) {

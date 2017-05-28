@@ -136,11 +136,11 @@ uint8_t lr35902_cpu::handleInterrupts() {
 	if (requestedInterrupts == 0)
 		return 0;
 
-	for (uint8_t i = 0; i < 5; ++i)
+	for (uint8_t mask = 1, i = 0; i < 5; ++i, mask <<= 1)
 	{
-		if (AND_BIT_N(requestedInterrupts, i))
+		if (requestedInterrupts & mask)
 		{
-			write(IF_OFT, CLEAR_BIT_N(requestedInterrupts, i));
+			write(IF_OFT, m_memory.read(IF_OFT) & ~mask);
 
 			// Stack PC
 			write(--m_registers.SP.w, static_cast<uint8_t>(m_registers.PC >> 8));

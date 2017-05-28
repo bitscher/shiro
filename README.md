@@ -3,7 +3,7 @@ Shiro
 
 Shiro is a free crossplatform Nintendo Gameboy emulator written as a hobby project.
 It is written in C++11 and relies on SDL for display and keyboard interface (although the code structure allows it to be easily swapped for some other library).
-It currently only support the original DMG Gameboy.
+It currently only supports the original DMG Gameboy.
 
 Platforms
 -----------------------
