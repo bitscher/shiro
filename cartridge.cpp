@@ -4,6 +4,7 @@
 #include <fstream>
 #include <iostream>
 #include <algorithm>
+#include <cmath>
 
 const char* Cartridge::CartridgeTypeDesc[] = {
 	"ROM_ONLY",
