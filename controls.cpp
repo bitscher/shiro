@@ -16,14 +16,17 @@ void Controls::UpdateEvents(bool &quit)
 	{
 		switch (e.key.keysym.sym)
 		{
-		case SDLK_a:
+		case SDLK_n:
 			m_GamePadHandler.buttonPressed(GamepadHandler::BUTTON_A);
 			break;
 		case SDLK_b:
 			m_GamePadHandler.buttonPressed(GamepadHandler::BUTTON_B);
 			break;
-		case SDLK_SPACE:
+		case SDLK_RETURN:
 			m_GamePadHandler.buttonPressed(GamepadHandler::BUTTON_START);
+			break;
+		case SDLK_BACKSPACE:
+			m_GamePadHandler.buttonPressed(GamepadHandler::BUTTON_SELECT);
 			break;
 		case SDLK_UP:
 			m_GamePadHandler.buttonPressed(GamepadHandler::BUTTON_UP);
@@ -43,14 +46,17 @@ void Controls::UpdateEvents(bool &quit)
 	{
 		switch (e.key.keysym.sym)
 		{
-		case SDLK_a:
+		case SDLK_n:
 			m_GamePadHandler.buttonReleased(GamepadHandler::BUTTON_A);
 			break;
 		case SDLK_b:
 			m_GamePadHandler.buttonReleased(GamepadHandler::BUTTON_B);
 			break;
-		case SDLK_SPACE:
+		case SDLK_RETURN:
 			m_GamePadHandler.buttonReleased(GamepadHandler::BUTTON_START);
+			break;
+		case SDLK_BACKSPACE:
+			m_GamePadHandler.buttonReleased(GamepadHandler::BUTTON_SELECT);
 			break;
 		case SDLK_UP:
 			m_GamePadHandler.buttonReleased(GamepadHandler::BUTTON_UP);

@@ -19,7 +19,7 @@ void Memory::initialize()
 	// NOTE: It seems the real hardware has random data in memory at startup but let's clear it anyway
 	std::memset(m_memory, 0, sizeof(m_memory));
 
-	m_gamePadKeyMap = 0;
+	m_gamePadKeyMap = 0xFF;
 
 	m_memory[0xFF05] = 0x00; // TIMA
 	m_memory[0xFF06] = 0x00; // TMA
@@ -83,6 +83,17 @@ uint8_t Memory::read(uint16_t address)
 	{
 		return m_memory[address - 0x2000];
 	}
+	else if (address == P1_OFT)
+	{
+		uint8_t joypadReg = m_memory[P1_OFT];
+		uint8_t keys = 0xF;
+		if ((joypadReg & 0x10) != 0) // Selected P15
+			keys = m_gamePadKeyMap;
+		else if ((joypadReg & 0x20) != 0) // Selected P14
+			keys = m_gamePadKeyMap >> 4;
+
+		return 0xF0 | (keys & 0x0F);
+	}
 	else
 	{
 		return m_memory[address];
@@ -113,14 +124,7 @@ void Memory::write(uint16_t address, uint8_t data)
 	}
 	else if (address == P1_OFT)
 	{
-		if ((data & 0x10) != 0) // Selected P15
-		{
-			m_memory[address] = (data & 0xF0) | (~m_gamePadKeyMap & 0x0F);
-		}
-		else if ((data & 0x20) != 0) // Selected P14
-		{
-			m_memory[address] = (data & 0xF0) | ((~m_gamePadKeyMap >> 4) & 0x0F);
-		}
+		m_memory[P1_OFT] = (data & 0x30) | (m_memory[P1_OFT] & 0x0F);
 	}
 	else
 		m_memory[address] = data;
