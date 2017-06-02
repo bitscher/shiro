@@ -10,7 +10,7 @@ void GamepadHandler::buttonPressed(GamePadButton_t button)
 	uint8_t &keyMap = m_memory.getGamePadKeyMap();
 	keyMap &= ~static_cast<uint8_t>(button);
 
-	m_memory[IF_OFT] = SET_BIT_N(m_memory[IF_OFT], 4);
+	m_memory.requestInterrupt(InteruptType::JOYPAD);
 }
 
 void GamepadHandler::buttonReleased(GamePadButton_t button)

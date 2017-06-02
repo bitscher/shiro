@@ -9,7 +9,7 @@ const uint8_t Graphics::s_greyShades[] = { 255, 170, 85, 0 };
 Graphics::Graphics(Memory & memory): m_memory(memory)
 {
 	std::memset(m_screenBuffer, 0xFF, sizeof(m_screenBuffer));
-	m_currentLCDMode = LCD_MODE2;
+	m_currentLCDMode = lcd_mode_t::LCD_MODE2;
 }
 
 void Graphics::drawLine() {
@@ -280,39 +280,33 @@ void Graphics::setLCDOperationMode(lcd_mode_t mode)
 
 	switch(mode)
 	{
-		case LCD_MODE0:     //H-Blank
+		case lcd_mode_t::LCD_MODE0:     //H-Blank
 			// Set Interrupt flag in LCD STAT (0xFF41.3)
 			m_memory[STAT_OFT] = SET_BIT_N(m_memory[STAT_OFT], 3);
 
-			// If enable set interrupt flag for LCD STAT (0xFF0F.1)
-			if (AND_BIT_N(m_memory[IE_OFT], 1))
-				m_memory[IF_OFT] = SET_BIT_N(m_memory[IF_OFT], 1);
+			m_memory.requestInterrupt(InteruptType::LCDSTAT);
 			break;
-		case LCD_MODE1:     //V-Blank
+		case lcd_mode_t::LCD_MODE1:     //V-Blank
 			// Set Interrupt flag in LCD STAT (0xFF41.4)
 			m_memory[STAT_OFT] = SET_BIT_N(m_memory[STAT_OFT], 4);
 
 			// Set current line to 144
 			m_memory[LCDC_Y_OFT] = 144;
 
-			// If enable set interrupt flag for V-BLANK (0xFF0F.0)
-			if (AND_BIT_N(m_memory[IE_OFT], 0))
-				m_memory[IF_OFT] = SET_BIT_N(m_memory[IF_OFT], 0);
+			m_memory.requestInterrupt(InteruptType::VBLANK);
 			break;
-		case LCD_MODE2:     //Reading OAM memory
+		case lcd_mode_t::LCD_MODE2:     //Reading OAM memory
 			// Update Y register (0xFF44), reset to zero if we just finished V-Blank
-			m_memory[LCDC_Y_OFT] = (m_currentLCDMode == LCD_MODE1) ? 0 : getYCoordinate() + 1 ;
+			m_memory[LCDC_Y_OFT] = (m_currentLCDMode == lcd_mode_t::LCD_MODE1) ? 0 : getYCoordinate() + 1 ;
 			// Set mode 2 interrupt flag in LCD STAT
 			m_memory[STAT_OFT] = SET_BIT_N(m_memory[STAT_OFT], 5);
 			// Check if LY=LYC
 			if (getYCoordinate() == getYCompareCoord())
 				m_memory[STAT_OFT] = SET_BIT_N(m_memory[STAT_OFT], 6);
 
-			// If enabled, set interrupt flag for LCD STAT (0xFF0F.1)
-			if (AND_BIT_N(m_memory[IE_OFT], 1))
-				m_memory[IF_OFT] = SET_BIT_N(m_memory[IF_OFT], 1);
+			m_memory.requestInterrupt(InteruptType::LCDSTAT);
 			break;
-		case LCD_MODE3:     //Reading OAM and VRAM
+		case lcd_mode_t::LCD_MODE3:     //Reading OAM and VRAM
 			// Draw the current line
 			drawLine();
 			break;

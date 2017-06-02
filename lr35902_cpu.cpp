@@ -71,6 +71,7 @@ lr35902_cpu::lr35902_cpu(Memory& memory) : m_memory(memory)
 	m_registers.CY = false;
 	m_registers.H = false;
 	m_registers.N = false;
+	m_registers.divider = 0;
 }
 
 void lr35902_cpu::run(uint32_t cycles)
@@ -95,13 +96,6 @@ uint8_t lr35902_cpu::update()
 		}
 
 		fetchIR();
-		/*
-		static FILE* logFilePC = nullptr;
-		if (logFilePC == nullptr)
-			logFilePC = fopen("logfilePC.txt", "w");
-
-		fprintf(logFilePC, "PC=%04X IR=%02X SP=%04X A=%02X B=%02X C=%02X D=%02X E=%02X H=%02X L=%02X\n", m_registers.PC, m_registers.IR, m_registers.SP.w, m_registers.A, m_registers.BC.b[1], m_registers.BC.b[0], m_registers.DE.b[1], m_registers.DE.b[0], m_registers.HL.b[1], m_registers.HL.b[0]);
-		*/
 
 		if (m_maskInterrupts) {
 			executedCycles = (*this.*handlers[m_registers.IR])(m_registers.IR);
@@ -115,7 +109,7 @@ uint8_t lr35902_cpu::update()
 			executedCycles = (*this.*handlers[m_registers.IR])(m_registers.IR);
 		}
 	}
-	else if (m_memory.read(IF_OFT) != 0)
+	else if ((m_memory.read(IF_OFT) & m_memory.read(IE_OFT)) != 0)
 	{
 		m_halted = m_stoped = false;
 	}
@@ -126,7 +120,7 @@ uint8_t lr35902_cpu::update()
 }
 
 uint8_t lr35902_cpu::fetchIR() {
-	return m_registers.IR = m_memory.read(m_registers.PC++);
+	return m_registers.IR = read(m_registers.PC++);
 }
 
 uint8_t lr35902_cpu::handleInterrupts() {
@@ -140,7 +134,7 @@ uint8_t lr35902_cpu::handleInterrupts() {
 	{
 		if (requestedInterrupts & mask)
 		{
-			write(IF_OFT, m_memory.read(IF_OFT) & ~mask);
+			write(IF_OFT, read(IF_OFT) & ~mask);
 
 			// Stack PC
 			write(--m_registers.SP.w, static_cast<uint8_t>(m_registers.PC >> 8));
@@ -161,48 +155,64 @@ uint8_t lr35902_cpu::handleInterrupts() {
 
 void lr35902_cpu::processTimer(uint8_t executedCycles) {
 
+	m_divRegisterCounter += executedCycles;
+	if (m_divRegisterCounter >= CPU_FREQ / 16384)
+	{
+		++m_registers.divider;
+		m_divRegisterCounter %= (CPU_FREQ / 16384);
+	}
+
 	if (!m_timerEnabled)
 		return;
 
 	m_clkCounter += executedCycles;
 	if (m_clkCounter >= m_timerDivider)
 	{
-		uint8_t tima = m_memory.read(TIMA_OFT);
+		uint8_t tima = read(TIMA_OFT);
 		if (tima == 0xFF)
 		{
-			tima = m_memory.read(TMA_OFT);
-
-			// If enabled set interrupt flag for TIMER (0xFF0F.2)
-			if (AND_BIT_N(m_memory.read(IE_OFT), 2)) {
-				write(IF_OFT, SET_BIT_N(m_memory.read(IF_OFT), 2));
-			}
-			m_clkCounter = 0;
+			tima = read(TMA_OFT);
+			m_memory.requestInterrupt(InteruptType::TIMER);
 		}
 		else
-		{
-			m_clkCounter -= m_timerDivider;
 			++tima;
-		}
+
+		m_clkCounter %= m_timerDivider;
 		write(TIMA_OFT, tima);
 	}
 }
 
 void lr35902_cpu::write(uint16_t address, uint8_t data) {
-	if (address == TAC_OFT)
+	switch(address)
 	{
-		uint8_t mode = data & 0x3;
-		//TODO this member is not useful...
-		m_timerEnabled = (data & 0x4) != 0;
-		switch (mode)
+		case TAC_OFT:
 		{
-			case 0: m_timerDivider = CPU_FREQ / 4096; break;
-			case 1: m_timerDivider = CPU_FREQ / 262144; break;
-			case 2: m_timerDivider = CPU_FREQ / 65536; break;
-			case 3: m_timerDivider = CPU_FREQ / 16384; break;
-		}
-	}
+			uint8_t mode = data & 0x3;
 
-	m_memory.write(address, data);
+			m_timerEnabled = (data & 0x4) != 0;
+			switch (mode)
+			{
+				case 0: m_timerDivider = CPU_FREQ / 4096; break;
+				case 1: m_timerDivider = CPU_FREQ / 262144; break;
+				case 2: m_timerDivider = CPU_FREQ / 65536; break;
+				case 3: m_timerDivider = CPU_FREQ / 16384; break;
+			}
+			m_memory.write(address, data);
+			break;
+		}
+		case DIV_OFT:
+			m_registers.divider = 0;
+			break;
+		default:
+			m_memory.write(address, data);
+	}
+}
+
+uint8_t lr35902_cpu::read(uint16_t address) {
+	if (address == DIV_OFT)
+		return m_registers.divider;
+
+	return m_memory.read(address);
 }
 
 uint8_t lr35902_cpu::getValForReg3b(uint8_t regnum) {
@@ -213,7 +223,7 @@ uint8_t lr35902_cpu::getValForReg3b(uint8_t regnum) {
 		case 3: return m_registers.DE.b[0]; //E
 		case 4: return m_registers.HL.b[1]; //H
 		case 5: return m_registers.HL.b[0]; //L
-		case 6: return m_memory.read(m_registers.HL.w); //(HL)
+		case 6: return read(m_registers.HL.w); //(HL)
 		case 7: return m_registers.A; //A
 	}
 	return 0;
@@ -315,22 +325,22 @@ uint8_t lr35902_cpu::ld_a(uint8_t opcode) {
 			write(m_registers.HL.w--, m_registers.A);
 			break;
 		case 0x0A: //LD A,(BC)
-			m_registers.A = m_memory.read(m_registers.BC.w);
+			m_registers.A = read(m_registers.BC.w);
 			break;
 		case 0x1A: //LD A,(DE)
-			m_registers.A = m_memory.read(m_registers.DE.w);
+			m_registers.A = read(m_registers.DE.w);
 			break;
 		case 0x2A: //LD A,(HL+)
-			m_registers.A = m_memory.read(m_registers.HL.w++);
+			m_registers.A = read(m_registers.HL.w++);
 			break;
 		case 0x3A: //LD A,(HL-)
-			m_registers.A = m_memory.read(m_registers.HL.w--);
+			m_registers.A = read(m_registers.HL.w--);
 			break;
 		case 0xE2: //LD (C),A
 			write(0xFF00 | m_registers.BC.b[0], m_registers.A);
 			break;
 		case 0xF2: //LD A, (C)
-			m_registers.A = m_memory.read(0xFF00 | m_registers.BC.b[0]);
+			m_registers.A = read(0xFF00 | m_registers.BC.b[0]);
 			break;
 		SWITCHDEFAULTERR("ld_a",opcode);
 	}
@@ -420,7 +430,7 @@ uint8_t lr35902_cpu::inc_8(uint8_t opcode) {
 
 uint8_t lr35902_cpu::inc_hl(uint8_t opcode) {
 	(void) opcode;
-	uint8_t val = m_memory.read(m_registers.HL.w);
+	uint8_t val = read(m_registers.HL.w);
 	uint8_t res = val + 1;
 	write(m_registers.HL.w, res);
 
@@ -477,7 +487,7 @@ uint8_t lr35902_cpu::dec_8(uint8_t opcode) {
 
 uint8_t lr35902_cpu::dec_hl(uint8_t opcode) {
 	(void) opcode;
-	uint8_t val = m_memory.read(m_registers.HL.w);
+	uint8_t val = read(m_registers.HL.w);
 	uint8_t res = val - 1;
 	write(m_registers.HL.w, res);
 
@@ -579,7 +589,7 @@ uint8_t lr35902_cpu::daa(uint8_t opcode) {
 
 	if (m_registers.H)
 		correction |= 0x06;
-	
+
 	if (m_registers.N)
 		res = m_registers.A - correction;
 	else
@@ -598,7 +608,7 @@ uint8_t lr35902_cpu::daa(uint8_t opcode) {
 	m_registers.A = static_cast<uint8_t>(res);
 
 	m_registers.ZF = (m_registers.A == 0);
-	
+
 	return 4;
 }
 
@@ -864,24 +874,24 @@ uint8_t lr35902_cpu::pop(uint8_t opcode) {
 
 	switch(r) {
 		case 0:
-			m_registers.BC.b[0] = m_memory.read(m_registers.SP.w++);
-			m_registers.BC.b[1] = m_memory.read(m_registers.SP.w++);
+			m_registers.BC.b[0] = read(m_registers.SP.w++);
+			m_registers.BC.b[1] = read(m_registers.SP.w++);
 			break;
 		case 1:
-			m_registers.DE.b[0] = m_memory.read(m_registers.SP.w++);
-			m_registers.DE.b[1] = m_memory.read(m_registers.SP.w++);
+			m_registers.DE.b[0] = read(m_registers.SP.w++);
+			m_registers.DE.b[1] = read(m_registers.SP.w++);
 			break;
 		case 2:
-			m_registers.HL.b[0] = m_memory.read(m_registers.SP.w++);
-			m_registers.HL.b[1] = m_memory.read(m_registers.SP.w++);
+			m_registers.HL.b[0] = read(m_registers.SP.w++);
+			m_registers.HL.b[1] = read(m_registers.SP.w++);
 			break;
 		case 3:
-			uint8_t flags = m_memory.read(m_registers.SP.w++);
+			uint8_t flags = read(m_registers.SP.w++);
 			m_registers.ZF = (flags & 0x80) != 0;
 			m_registers.N = (flags & 0x40) != 0;
 			m_registers.H = (flags & 0x20) != 0;
 			m_registers.CY = (flags & 0x10) != 0;
-			m_registers.A = m_memory.read(m_registers.SP.w++);
+			m_registers.A = read(m_registers.SP.w++);
 
 			break;
 	}
@@ -911,8 +921,8 @@ uint8_t lr35902_cpu::ret_cc(uint8_t opcode) {
 		retOK = m_registers.CY;
 
 	if (retOK) {
-		m_registers.PC = m_memory.read(m_registers.SP.w++);
-		m_registers.PC |= m_memory.read(m_registers.SP.w++) << 8;
+		m_registers.PC = read(m_registers.SP.w++);
+		m_registers.PC |= read(m_registers.SP.w++) << 8;
 		return 20;
 	}
 	else
@@ -930,7 +940,7 @@ uint8_t lr35902_cpu::ldh(uint8_t opcode) {
 	if(opcode == 0xE0) { //LDH (a8), A
 		write(val, m_registers.A);
 	} else { //LDH A, (a8)
-		m_registers.A = m_memory.read(val);
+		m_registers.A = read(val);
 	}
 
 	return 12;
@@ -1054,7 +1064,7 @@ uint8_t lr35902_cpu::ld_a_a16(uint8_t opcode) {
 	if (opcode == 0xEA)
 		write(a16, m_registers.A);
 	else
-		m_registers.A = m_memory.read(a16);
+		m_registers.A = read(a16);
 	return 16;
 }
 
@@ -1071,8 +1081,8 @@ uint8_t lr35902_cpu::jp_a16(uint8_t opcode)
 uint8_t lr35902_cpu::ret(uint8_t opcode)
 {
 	(void) opcode;
-	uint16_t PC = m_memory.read(m_registers.SP.w++);
-	PC |= m_memory.read(m_registers.SP.w++) << 8;
+	uint16_t PC = read(m_registers.SP.w++);
+	PC |= read(m_registers.SP.w++) << 8;
 	m_registers.PC = PC;
 	return 16;
 }
@@ -1124,7 +1134,7 @@ uint8_t lr35902_cpu::rlc(uint8_t opcode) {
 			shifted = m_registers.HL.b[0] = (original << 1) | ((original & 0x80) ? 1 : 0);
 			break;
 		case 6: //(HL)
-			original = m_memory.read(m_registers.HL.w);
+			original = read(m_registers.HL.w);
 			shifted = (original << 1) | ((original & 0x80) ? 1 : 0);
 			write(m_registers.HL.w, shifted);
 			break;
@@ -1171,7 +1181,7 @@ uint8_t lr35902_cpu::rrc(uint8_t opcode) {
 			shifted = m_registers.HL.b[0] = (original >> 1) | ((original & 0x01) ? 0x80 : 0);
 			break;
 		case 6: //(HL)
-			original = m_memory.read(m_registers.HL.w);
+			original = read(m_registers.HL.w);
 			shifted = (original >> 1) | ((original & 0x01) ? 0x80 : 0);
 			write(m_registers.HL.w, shifted);
 			break;
@@ -1218,7 +1228,7 @@ uint8_t lr35902_cpu::rl(uint8_t opcode) {
 			shifted = m_registers.HL.b[0] = (original << 1) | ((m_registers.CY) ? 1 : 0);
 			break;
 		case 6: //(HL)
-			original = m_memory.read(m_registers.HL.w);
+			original = read(m_registers.HL.w);
 			shifted = (original << 1) | ((m_registers.CY) ? 1 : 0);
 			write(m_registers.HL.w, shifted);
 			break;
@@ -1265,7 +1275,7 @@ uint8_t lr35902_cpu::rr(uint8_t opcode) {
 			shifted = m_registers.HL.b[0] = (original >> 1) | ((m_registers.CY) ? 0x80 : 0);
 			break;
 		case 6: //(HL)
-			original = m_memory.read(m_registers.HL.w);
+			original = read(m_registers.HL.w);
 			shifted = (original >> 1) | ((m_registers.CY) ? 0x80 : 0);
 			write(m_registers.HL.w, shifted);
 			break;
@@ -1312,7 +1322,7 @@ uint8_t lr35902_cpu::sla(uint8_t opcode) {
 			shifted = m_registers.HL.b[0] = (original << 1);
 			break;
 		case 6: //(HL)
-			original = m_memory.read(m_registers.HL.w);
+			original = read(m_registers.HL.w);
 			shifted = (original << 1);
 			write(m_registers.HL.w, shifted);
 			break;
@@ -1359,7 +1369,7 @@ uint8_t lr35902_cpu::sra(uint8_t opcode) {
 			shifted = m_registers.HL.b[0] = (original >> 1) | ((original&0x80) ? 0x80 : 0);
 			break;
 		case 6: //(HL)
-			original = m_memory.read(m_registers.HL.w);
+			original = read(m_registers.HL.w);
 			shifted = (original >> 1) | ((original&0x80) ? 0x80 : 0);
 			write(m_registers.HL.w, shifted);
 			break;
@@ -1401,7 +1411,7 @@ uint8_t lr35902_cpu::swap(uint8_t opcode) {
 			break;
 		case 6: //(HL)
 			{
-				uint8_t data = m_memory.read(m_registers.HL.w);
+				uint8_t data = read(m_registers.HL.w);
 				swapped = (data >> 4) | (data << 4);
 				write(m_registers.HL.w, swapped);
 			}
@@ -1448,7 +1458,7 @@ uint8_t lr35902_cpu::srl(uint8_t opcode) {
 			shifted = m_registers.HL.b[0] = (original >> 1);
 			break;
 		case 6: //(HL)
-			original = m_memory.read(m_registers.HL.w);
+			original = read(m_registers.HL.w);
 			shifted = (original >> 1);
 			write(m_registers.HL.w, shifted);
 			break;
@@ -1489,7 +1499,7 @@ uint8_t lr35902_cpu::bit(uint8_t opcode) {
 			m_registers.ZF = !(m_registers.HL.b[0] & (1 << bit));
 			break;
 		case 6: //(HL)
-			m_registers.ZF = !(m_memory.read(m_registers.HL.w) & (1 << bit));
+			m_registers.ZF = !(read(m_registers.HL.w) & (1 << bit));
 			break;
 		case 7: //A
 			m_registers.ZF = !(m_registers.A & (1 << bit));
@@ -1525,7 +1535,7 @@ uint8_t lr35902_cpu::res(uint8_t opcode) {
 			m_registers.HL.b[0] &= ~(1 << bit);
 			break;
 		case 6: //(HL)
-			write(m_registers.HL.w, m_memory.read(m_registers.HL.w) & ~(1 << bit));
+			write(m_registers.HL.w, read(m_registers.HL.w) & ~(1 << bit));
 			break;
 		case 7: //A
 			m_registers.A &= ~(1 << bit);
@@ -1559,7 +1569,7 @@ uint8_t lr35902_cpu::set(uint8_t opcode) {
 			m_registers.HL.b[0] |= (1 << bit);
 			break;
 		case 6: //(HL)
-			write(m_registers.HL.w, m_memory.read(m_registers.HL.w) | (1 << bit));
+			write(m_registers.HL.w, read(m_registers.HL.w) | (1 << bit));
 			break;
 		case 7: //A
 			m_registers.A |= (1 << bit);

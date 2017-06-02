@@ -11,11 +11,12 @@ class Graphics
 public:
 	static const uint8_t s_greyShades[4];
 
-/*	Mode 0 - H-Blank
-	Mode 1 - V-Blank
-	Mode 2 - Reading OAM memory
-	Mode 3 - Reading OAM and VRAM 	*/
-	using lcd_mode_t = enum : uint8_t {LCD_MODE0, LCD_MODE1, LCD_MODE2, LCD_MODE3};
+	using lcd_mode_t = enum class: uint8_t {
+		LCD_MODE0,	//Mode 0 - H-Blank
+		LCD_MODE1,	//Mode 1 - V-Blank
+		LCD_MODE2,	//Mode 2 - Reading OAM memory
+		LCD_MODE3	//Mode 3 - Reading OAM and VRAM
+	};
 
 	using OAM_Entry = struct {
 		uint8_t yPos;
@@ -39,7 +40,7 @@ public:
 
 	void* getScreenBuffer() { return static_cast<void*>(m_screenBuffer); }
 	uint32_t getScreenBufferSize() { return sizeof(m_screenBuffer); }
-	
+
 	void* getSpriteDebugBuffer() { return static_cast<void*>(m_spriteDebugBuffer); }
 	uint32_t getSpriteDebugBufferSize() { return sizeof(m_spriteDebugBuffer); }
 	void fillSpriteDebugBuffer();

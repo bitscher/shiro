@@ -32,6 +32,7 @@ enum : uint16_t {
 	WY_OFT			= 0xFF4A,	//Window Y Position
 	WX_OFT			= 0xFF4B,	//Window X Position minus 7
 
+	DIV_OFT			= 0xFF04,	//Divider Register
 	TIMA_OFT		= 0xFF05,	//Timer counter
 	TMA_OFT			= 0xFF06,	//Timer Modulo
 	TAC_OFT			= 0xFF07,	//Timer Control
@@ -40,4 +41,12 @@ enum : uint16_t {
 	IE_OFT			= 0xFFFF,
 
 	P1_OFT			= 0xFF00
+};
+
+enum class InteruptType: uint8_t {
+	VBLANK  = 0,
+	LCDSTAT = 1,
+	TIMER   = 2,
+	SERIAL  = 3,
+	JOYPAD  = 4
 };

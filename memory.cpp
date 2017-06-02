@@ -17,7 +17,7 @@ Memory::~Memory()
 void Memory::initialize()
 {
 	// NOTE: It seems the real hardware has random data in memory at startup but let's clear it anyway
-	std::memset(m_memory, 0, sizeof(m_memory));
+	//std::memset(m_memory, 0, sizeof(m_memory));
 
 	m_gamePadKeyMap = 0xFF;
 
@@ -103,7 +103,7 @@ uint8_t Memory::read(uint16_t address)
 void Memory::write(uint16_t address, uint8_t data)
 {
 	if (address == 0xFF02 && data == 0x81) //Serial
-		m_memory[0xFF0F] = SET_BIT_N(m_memory[0xFF0F], 3);
+		requestInterrupt(InteruptType::SERIAL);
 	else if (address == 0xFF50 && data == 0x01)
 	{
 		std::cout << "Disabling boot rom" << std::endl;
@@ -128,4 +128,9 @@ void Memory::write(uint16_t address, uint8_t data)
 	}
 	else
 		m_memory[address] = data;
+}
+
+void Memory::requestInterrupt(enum InteruptType interruptType)
+{
+	m_memory[IF_OFT] |= (1 << static_cast<uint8_t>(interruptType));
 }

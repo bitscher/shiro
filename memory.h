@@ -13,6 +13,7 @@ public:
 
 	uint8_t read(uint16_t address);
 	void write(uint16_t address, uint8_t data);
+	void requestInterrupt(enum InteruptType interruptType);
 
 	void switchBank(uint8_t data);
 	Cartridge& getCartridge() { return m_cartridge; }

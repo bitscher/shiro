@@ -46,6 +46,8 @@ private:
 		bool CY;			// Carry flag
 
 		uint8_t IR;
+
+		uint8_t divider;
 	} m_registers;
 
 	bool m_halted = false;
@@ -55,6 +57,7 @@ private:
 	bool m_unMaskInterrupts = false;
 
 	uint64_t m_clkCounter = 0;
+	uint64_t m_divRegisterCounter = 0;
 	uint32_t m_timerDivider = CPU_FREQ;
 	bool m_timerEnabled = false;
 
@@ -133,6 +136,7 @@ private:
 	uint8_t set(uint8_t opcode);
 
 	void write(uint16_t address, uint8_t data);
+	uint8_t read(uint16_t address);
 
 	void debugDisplay();
 };
