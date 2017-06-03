@@ -11,7 +11,7 @@ class Graphics
 public:
 	static const uint8_t s_greyShades[4];
 
-	using lcd_mode_t = enum class: uint8_t {
+	enum class lcd_mode_t: uint8_t {
 		LCD_MODE0,	//Mode 0 - H-Blank
 		LCD_MODE1,	//Mode 1 - V-Blank
 		LCD_MODE2,	//Mode 2 - Reading OAM memory
