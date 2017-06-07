@@ -178,10 +178,9 @@ void Graphics::drawObj(uint8_t currentLine)
 					{
 						uint8_t colorIdx = (((tileDataUpper >> (7-pix)) & 0x1) << 1) | ((tileDataLower >> (7-pix)) & 0x1);
 
-						curSpriteXPosForPix[screenPix] = curSprite.xPos;
-
 						if (colorIdx != 0 && (drawOnTop || m_screenBuffer[currentLine][screenPix][0] == s_greyShades[0]))
 						{
+							curSpriteXPosForPix[screenPix] = curSprite.xPos;
 							// Fetch color in palette
 							uint8_t color = (palette >> (2*colorIdx)) & 0x3;
 
