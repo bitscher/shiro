@@ -1,6 +1,6 @@
 #include "gamepad.h"
 #include "gbdefines.h"
-#include "bitwiseop.h"
+#include "utils.h"
 
 GamepadHandler::GamepadHandler(Memory &memory) : m_memory(memory)
 {}

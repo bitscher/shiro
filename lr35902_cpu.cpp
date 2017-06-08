@@ -1,6 +1,6 @@
 #include "config.h"
 #include "lr35902_cpu.h"
-#include "bitwiseop.h"
+#include "utils.h"
 
 #include <iostream>
 #define SWITCHDEFAULTERR(func, opcode) default: fprintf(stderr,  "Error in %s(): unknown opcode: 0x%02X\n", func, opcode);

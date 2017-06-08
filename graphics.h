@@ -2,7 +2,7 @@
 
 #include <cstdint>
 
-#include "bitwiseop.h"
+#include "utils.h"
 
 #include "memory.h"
 
