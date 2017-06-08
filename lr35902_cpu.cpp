@@ -67,9 +67,9 @@ lr35902_cpu::lr35902_cpu(Memory& memory) : m_memory(memory)
 	m_registers.BC.w = 0x0013;
 	m_registers.DE.w = 0x00D8;
 	m_registers.HL.w = 0x014D;
-	m_registers.ZF = false;
-	m_registers.CY = false;
-	m_registers.H = false;
+	m_registers.ZF = true;
+	m_registers.CY = true;
+	m_registers.H = true;
 	m_registers.N = false;
 	m_registers.divider = 0;
 }

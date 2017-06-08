@@ -161,10 +161,17 @@ void Graphics::drawObj(uint8_t currentLine)
 
 				// Fetch the correct tile data
 				uint8_t tileIdx = (use8x16) ? (curSprite.tileIdx & 0xFE) : curSprite.tileIdx;
-				uint8_t tileDataLower = m_memory[SPRITE_DATA_OFT + spriteSizeBytes * tileIdx + (currentLine - upperY) * 2];
-				uint8_t tileDataUpper = m_memory[SPRITE_DATA_OFT + spriteSizeBytes * tileIdx + (currentLine - upperY) * 2 + 1];
 
-				if (curSprite.isXFlipped()) // X Flip
+				uint16_t dataAddress;
+				if (!curSprite.isYFlipped())
+					dataAddress = SPRITE_DATA_OFT + spriteSizeBytes * tileIdx + (currentLine - upperY) * 2;
+				else
+					dataAddress = SPRITE_DATA_OFT + spriteSizeBytes * tileIdx + (spriteHeight + upperY - currentLine) * 2;
+
+				uint8_t tileDataLower = m_memory[dataAddress];
+				uint8_t tileDataUpper = m_memory[dataAddress + 1];
+
+				if (curSprite.isXFlipped())
 				{
 					tileDataLower = BitReverseTable256[tileDataLower];
 					tileDataUpper = BitReverseTable256[tileDataUpper];
@@ -241,8 +248,15 @@ void Graphics::fillSpriteDebugBuffer()
 
 			// Fetch the correct tile data
 			uint8_t tileIdx = use8x16Sprites() ? curSprite.tileIdx & 0xFE : curSprite.tileIdx;
-			uint8_t tileDataLower = m_memory[SPRITE_DATA_OFT + spriteSizeBytes * tileIdx + line * 2];
-			uint8_t tileDataUpper = m_memory[SPRITE_DATA_OFT + spriteSizeBytes * tileIdx + line * 2 + 1];
+
+			uint16_t dataAddress;
+			if (!curSprite.isYFlipped())
+				dataAddress = SPRITE_DATA_OFT + spriteSizeBytes * tileIdx + line * 2;
+			else
+				dataAddress = SPRITE_DATA_OFT + spriteSizeBytes * tileIdx + (spriteHeight - line) * 2;
+
+			uint8_t tileDataLower = m_memory[dataAddress];
+			uint8_t tileDataUpper = m_memory[dataAddress + 1];
 
 			if (curSprite.isXFlipped()) // X Flip
 			{

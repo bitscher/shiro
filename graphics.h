@@ -25,7 +25,7 @@ public:
 		uint8_t attributeFlags;
 
 		bool getPriority() { return AND_BIT_N(attributeFlags, 7) != 0; }
-		bool isYFlipped() { return false; }
+		bool isYFlipped() { return AND_BIT_N(attributeFlags, 6) != 0; }
 		bool isXFlipped() { return AND_BIT_N(attributeFlags, 5) != 0; }
 		bool getPalette() { return AND_BIT_N(attributeFlags, 4) != 0; }
 	};
