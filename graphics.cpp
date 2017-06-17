@@ -294,14 +294,13 @@ void Graphics::setLCDOperationMode(lcd_mode_t mode)
 	switch(mode)
 	{
 		case lcd_mode_t::LCD_MODE0:     //H-Blank
-			// Set Interrupt flag in LCD STAT (0xFF41.3)
-			m_memory[STAT_OFT] = SET_BIT_N(m_memory[STAT_OFT], 3);
-
-			m_memory.requestInterrupt(InteruptType::LCDSTAT);
+			if (AND_BIT_N(m_memory[STAT_OFT], 3))
+				m_memory.requestInterrupt(InteruptType::LCDSTAT);
 			break;
 		case lcd_mode_t::LCD_MODE1:     //V-Blank
-			// Set Interrupt flag in LCD STAT (0xFF41.4)
-			m_memory[STAT_OFT] = SET_BIT_N(m_memory[STAT_OFT], 4);
+
+			if (AND_BIT_N(m_memory[STAT_OFT], 4))
+				m_memory.requestInterrupt(InteruptType::LCDSTAT);
 
 			// Set current line to 144
 			m_memory[LCDC_Y_OFT] = 144;
@@ -311,13 +310,12 @@ void Graphics::setLCDOperationMode(lcd_mode_t mode)
 		case lcd_mode_t::LCD_MODE2:     //Reading OAM memory
 			// Update Y register (0xFF44), reset to zero if we just finished V-Blank
 			m_memory[LCDC_Y_OFT] = (m_currentLCDMode == lcd_mode_t::LCD_MODE1) ? 0 : getYCoordinate() + 1 ;
-			// Set mode 2 interrupt flag in LCD STAT
-			m_memory[STAT_OFT] = SET_BIT_N(m_memory[STAT_OFT], 5);
-			// Check if LY=LYC
-			if (getYCoordinate() == getYCompareCoord())
-				m_memory[STAT_OFT] = SET_BIT_N(m_memory[STAT_OFT], 6);
 
-			m_memory.requestInterrupt(InteruptType::LCDSTAT);
+			if (AND_BIT_N(m_memory[STAT_OFT], 5)
+				|| (AND_BIT_N(m_memory[STAT_OFT], 6)
+					&& getYCoordinate() == getYCompareCoord()))
+				m_memory.requestInterrupt(InteruptType::LCDSTAT);
+
 			break;
 		case lcd_mode_t::LCD_MODE3:     //Reading OAM and VRAM
 			// Draw the current line
