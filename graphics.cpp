@@ -75,7 +75,7 @@ void Graphics::drawWin(uint8_t currentLine)
 {
 	if (isWindowDisplayEnabled())
 	{
-		uint8_t winXPos = getWindowXPos() - 7;
+		uint8_t winXPos = getWindowXPos();
 		uint8_t winYPos = getWindowYPos();
 
 		if (winXPos < 160 && winYPos <= currentLine)
@@ -83,15 +83,13 @@ void Graphics::drawWin(uint8_t currentLine)
 			uint16_t winTileMapAddress = getWinTileMapAddress();
 			uint16_t tileDataAddress = getTileDataAddress();
 
-			uint8_t visiblePixels = 160 - winXPos;
-
 			uint16_t winCoordY = currentLine - winYPos;
 			uint8_t tileCoordY = (winCoordY / 8) % 32;
 			uint16_t lineOffset = (winCoordY % 8) * 2;
 
 			uint8_t palette = getBGPalette();
 
-			for (uint8_t x = 0; x < visiblePixels;)
+			for (uint8_t x = std::max(0, winXPos - 7); x < 160;)
 			{
 				uint8_t tileCoordX = (x / 8) % 32;
 
@@ -104,7 +102,7 @@ void Graphics::drawWin(uint8_t currentLine)
 				uint8_t tileDataLower = m_memory[tileDataAddress + tileIdx * 16 + lineOffset];
 				uint8_t tileDataUpper = m_memory[tileDataAddress + tileIdx * 16 + lineOffset + 1];
 
-				for (uint8_t pix = (x % 8); pix < 8 && x < visiblePixels; ++pix, ++x)
+				for (uint8_t pix = (x % 8); pix < 8 && x < 160; ++pix, ++x)
 				{
 					uint8_t colorIdx = (((tileDataUpper >> (7-pix)) & 0x1) << 1) | ((tileDataLower >> (7-pix)) & 0x1);
 					// Fetch color in palette
@@ -112,9 +110,9 @@ void Graphics::drawWin(uint8_t currentLine)
 
 					uint8_t greyLevel = s_greyShades[color];
 
-					m_screenBuffer[currentLine][x + winXPos][0] = greyLevel;
-					m_screenBuffer[currentLine][x + winXPos][1] = greyLevel;
-					m_screenBuffer[currentLine][x + winXPos][2] = greyLevel;
+					m_screenBuffer[currentLine][x][0] = greyLevel;
+					m_screenBuffer[currentLine][x][1] = greyLevel;
+					m_screenBuffer[currentLine][x][2] = greyLevel;
 				}
 			}
 		}
