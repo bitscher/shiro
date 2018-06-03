@@ -37,22 +37,22 @@ lr35902_cpu::instructionHandler lr35902_cpu::handlers[] = {
 
 lr35902_cpu::instructionHandler lr35902_cpu::cb_handlers[] = {
 	/*		0						1						2						3						4						5						6						7						8						9						A						B						C						D						E						F */
-	/* 0 */	&lr35902_cpu::rlc,		&lr35902_cpu::rlc,		&lr35902_cpu::rlc,		&lr35902_cpu::rlc,		&lr35902_cpu::rlc,		&lr35902_cpu::rlc,		&lr35902_cpu::rlc,		&lr35902_cpu::rlc,		&lr35902_cpu::rrc,		&lr35902_cpu::rrc,		&lr35902_cpu::rrc,		&lr35902_cpu::rrc,		&lr35902_cpu::rrc,		&lr35902_cpu::rrc,		&lr35902_cpu::rrc,		&lr35902_cpu::rrc,
-	/* 1 */	&lr35902_cpu::rl,		&lr35902_cpu::rl,		&lr35902_cpu::rl,		&lr35902_cpu::rl,		&lr35902_cpu::rl,		&lr35902_cpu::rl,		&lr35902_cpu::rl,		&lr35902_cpu::rl,		&lr35902_cpu::rr,		&lr35902_cpu::rr,		&lr35902_cpu::rr,		&lr35902_cpu::rr,		&lr35902_cpu::rr,		&lr35902_cpu::rr,		&lr35902_cpu::rr,		&lr35902_cpu::rr,
-	/* 2 */	&lr35902_cpu::sla,		&lr35902_cpu::sla,		&lr35902_cpu::sla,		&lr35902_cpu::sla,		&lr35902_cpu::sla,		&lr35902_cpu::sla,		&lr35902_cpu::sla,		&lr35902_cpu::sla,		&lr35902_cpu::sra,		&lr35902_cpu::sra,		&lr35902_cpu::sra,		&lr35902_cpu::sra,		&lr35902_cpu::sra,		&lr35902_cpu::sra,		&lr35902_cpu::sra,		&lr35902_cpu::sra,
-	/* 3 */	&lr35902_cpu::swap,		&lr35902_cpu::swap,		&lr35902_cpu::swap,		&lr35902_cpu::swap,		&lr35902_cpu::swap,		&lr35902_cpu::swap,		&lr35902_cpu::swap,		&lr35902_cpu::swap,		&lr35902_cpu::srl,		&lr35902_cpu::srl,		&lr35902_cpu::srl,		&lr35902_cpu::srl,		&lr35902_cpu::srl,		&lr35902_cpu::srl,		&lr35902_cpu::srl,		&lr35902_cpu::srl,
-	/* 4 */	&lr35902_cpu::bit,		&lr35902_cpu::bit,		&lr35902_cpu::bit,		&lr35902_cpu::bit,		&lr35902_cpu::bit,		&lr35902_cpu::bit,		&lr35902_cpu::bit,		&lr35902_cpu::bit,		&lr35902_cpu::bit,		&lr35902_cpu::bit,		&lr35902_cpu::bit,		&lr35902_cpu::bit,		&lr35902_cpu::bit,		&lr35902_cpu::bit,		&lr35902_cpu::bit,		&lr35902_cpu::bit,
-	/* 5 */	&lr35902_cpu::bit,		&lr35902_cpu::bit,		&lr35902_cpu::bit,		&lr35902_cpu::bit,		&lr35902_cpu::bit,		&lr35902_cpu::bit,		&lr35902_cpu::bit,		&lr35902_cpu::bit,		&lr35902_cpu::bit,		&lr35902_cpu::bit,		&lr35902_cpu::bit,		&lr35902_cpu::bit,		&lr35902_cpu::bit,		&lr35902_cpu::bit,		&lr35902_cpu::bit,		&lr35902_cpu::bit,
-	/* 6 */	&lr35902_cpu::bit,		&lr35902_cpu::bit,		&lr35902_cpu::bit,		&lr35902_cpu::bit,		&lr35902_cpu::bit,		&lr35902_cpu::bit,		&lr35902_cpu::bit,		&lr35902_cpu::bit,		&lr35902_cpu::bit,		&lr35902_cpu::bit,		&lr35902_cpu::bit,		&lr35902_cpu::bit,		&lr35902_cpu::bit,		&lr35902_cpu::bit,		&lr35902_cpu::bit,		&lr35902_cpu::bit,
-	/* 7 */	&lr35902_cpu::bit,		&lr35902_cpu::bit,		&lr35902_cpu::bit,		&lr35902_cpu::bit,		&lr35902_cpu::bit,		&lr35902_cpu::bit,		&lr35902_cpu::bit,		&lr35902_cpu::bit,		&lr35902_cpu::bit,		&lr35902_cpu::bit,		&lr35902_cpu::bit,		&lr35902_cpu::bit,		&lr35902_cpu::bit,		&lr35902_cpu::bit,		&lr35902_cpu::bit,		&lr35902_cpu::bit,
-	/* 8 */	&lr35902_cpu::res,		&lr35902_cpu::res,		&lr35902_cpu::res,		&lr35902_cpu::res,		&lr35902_cpu::res,		&lr35902_cpu::res,		&lr35902_cpu::res,		&lr35902_cpu::res,		&lr35902_cpu::res,		&lr35902_cpu::res,		&lr35902_cpu::res,		&lr35902_cpu::res,		&lr35902_cpu::res,		&lr35902_cpu::res,		&lr35902_cpu::res,		&lr35902_cpu::res,
-	/* 9 */	&lr35902_cpu::res,		&lr35902_cpu::res,		&lr35902_cpu::res,		&lr35902_cpu::res,		&lr35902_cpu::res,		&lr35902_cpu::res,		&lr35902_cpu::res,		&lr35902_cpu::res,		&lr35902_cpu::res,		&lr35902_cpu::res,		&lr35902_cpu::res,		&lr35902_cpu::res,		&lr35902_cpu::res,		&lr35902_cpu::res,		&lr35902_cpu::res,		&lr35902_cpu::res,
-	/* A */	&lr35902_cpu::res,		&lr35902_cpu::res,		&lr35902_cpu::res,		&lr35902_cpu::res,		&lr35902_cpu::res,		&lr35902_cpu::res,		&lr35902_cpu::res,		&lr35902_cpu::res,		&lr35902_cpu::res,		&lr35902_cpu::res,		&lr35902_cpu::res,		&lr35902_cpu::res,		&lr35902_cpu::res,		&lr35902_cpu::res,		&lr35902_cpu::res,		&lr35902_cpu::res,
-	/* B */	&lr35902_cpu::res,		&lr35902_cpu::res,		&lr35902_cpu::res,		&lr35902_cpu::res,		&lr35902_cpu::res,		&lr35902_cpu::res,		&lr35902_cpu::res,		&lr35902_cpu::res,		&lr35902_cpu::res,		&lr35902_cpu::res,		&lr35902_cpu::res,		&lr35902_cpu::res,		&lr35902_cpu::res,		&lr35902_cpu::res,		&lr35902_cpu::res,		&lr35902_cpu::res,
-	/* C */	&lr35902_cpu::set,		&lr35902_cpu::set,		&lr35902_cpu::set,		&lr35902_cpu::set,		&lr35902_cpu::set,		&lr35902_cpu::set,		&lr35902_cpu::set,		&lr35902_cpu::set,		&lr35902_cpu::set,		&lr35902_cpu::set,		&lr35902_cpu::set,		&lr35902_cpu::set,		&lr35902_cpu::set,		&lr35902_cpu::set,		&lr35902_cpu::set,		&lr35902_cpu::set,
-	/* D */	&lr35902_cpu::set,		&lr35902_cpu::set,		&lr35902_cpu::set,		&lr35902_cpu::set,		&lr35902_cpu::set,		&lr35902_cpu::set,		&lr35902_cpu::set,		&lr35902_cpu::set,		&lr35902_cpu::set,		&lr35902_cpu::set,		&lr35902_cpu::set,		&lr35902_cpu::set,		&lr35902_cpu::set,		&lr35902_cpu::set,		&lr35902_cpu::set,		&lr35902_cpu::set,
-	/* E */	&lr35902_cpu::set,		&lr35902_cpu::set,		&lr35902_cpu::set,		&lr35902_cpu::set,		&lr35902_cpu::set,		&lr35902_cpu::set,		&lr35902_cpu::set,		&lr35902_cpu::set,		&lr35902_cpu::set,		&lr35902_cpu::set,		&lr35902_cpu::set,		&lr35902_cpu::set,		&lr35902_cpu::set,		&lr35902_cpu::set,		&lr35902_cpu::set,		&lr35902_cpu::set,
-	/* F */	&lr35902_cpu::set,		&lr35902_cpu::set,		&lr35902_cpu::set,		&lr35902_cpu::set,		&lr35902_cpu::set,		&lr35902_cpu::set,		&lr35902_cpu::set,		&lr35902_cpu::set,		&lr35902_cpu::set,		&lr35902_cpu::set,		&lr35902_cpu::set,		&lr35902_cpu::set,		&lr35902_cpu::set,		&lr35902_cpu::set,		&lr35902_cpu::set,		&lr35902_cpu::set
+	/* 0 */	&lr35902_cpu::rlc,		&lr35902_cpu::rlc,		&lr35902_cpu::rlc,		&lr35902_cpu::rlc,		&lr35902_cpu::rlc,		&lr35902_cpu::rlc,		&lr35902_cpu::rlcHL,	&lr35902_cpu::rlc,		&lr35902_cpu::rrc,		&lr35902_cpu::rrc,		&lr35902_cpu::rrc,		&lr35902_cpu::rrc,		&lr35902_cpu::rrc,		&lr35902_cpu::rrc,		&lr35902_cpu::rrcHL,	&lr35902_cpu::rrc,
+	/* 1 */	&lr35902_cpu::rl,		&lr35902_cpu::rl,		&lr35902_cpu::rl,		&lr35902_cpu::rl,		&lr35902_cpu::rl,		&lr35902_cpu::rl,		&lr35902_cpu::rlHL,		&lr35902_cpu::rl,		&lr35902_cpu::rr,		&lr35902_cpu::rr,		&lr35902_cpu::rr,		&lr35902_cpu::rr,		&lr35902_cpu::rr,		&lr35902_cpu::rr,		&lr35902_cpu::rrHL,		&lr35902_cpu::rr,
+	/* 2 */	&lr35902_cpu::sla,		&lr35902_cpu::sla,		&lr35902_cpu::sla,		&lr35902_cpu::sla,		&lr35902_cpu::sla,		&lr35902_cpu::sla,		&lr35902_cpu::slaHL,	&lr35902_cpu::sla,		&lr35902_cpu::sra,		&lr35902_cpu::sra,		&lr35902_cpu::sra,		&lr35902_cpu::sra,		&lr35902_cpu::sra,		&lr35902_cpu::sra,		&lr35902_cpu::sraHL,	&lr35902_cpu::sra,
+	/* 3 */	&lr35902_cpu::swap,		&lr35902_cpu::swap,		&lr35902_cpu::swap,		&lr35902_cpu::swap,		&lr35902_cpu::swap,		&lr35902_cpu::swap,		&lr35902_cpu::swapHL,	&lr35902_cpu::swap,		&lr35902_cpu::srl,		&lr35902_cpu::srl,		&lr35902_cpu::srl,		&lr35902_cpu::srl,		&lr35902_cpu::srl,		&lr35902_cpu::srl,		&lr35902_cpu::srlHL,	&lr35902_cpu::srl,
+	/* 4 */	&lr35902_cpu::bit,		&lr35902_cpu::bit,		&lr35902_cpu::bit,		&lr35902_cpu::bit,		&lr35902_cpu::bit,		&lr35902_cpu::bit,		&lr35902_cpu::bitHL,	&lr35902_cpu::bit,		&lr35902_cpu::bit,		&lr35902_cpu::bit,		&lr35902_cpu::bit,		&lr35902_cpu::bit,		&lr35902_cpu::bit,		&lr35902_cpu::bit,		&lr35902_cpu::bitHL,	&lr35902_cpu::bit,
+	/* 5 */	&lr35902_cpu::bit,		&lr35902_cpu::bit,		&lr35902_cpu::bit,		&lr35902_cpu::bit,		&lr35902_cpu::bit,		&lr35902_cpu::bit,		&lr35902_cpu::bitHL,	&lr35902_cpu::bit,		&lr35902_cpu::bit,		&lr35902_cpu::bit,		&lr35902_cpu::bit,		&lr35902_cpu::bit,		&lr35902_cpu::bit,		&lr35902_cpu::bit,		&lr35902_cpu::bitHL,	&lr35902_cpu::bit,
+	/* 6 */	&lr35902_cpu::bit,		&lr35902_cpu::bit,		&lr35902_cpu::bit,		&lr35902_cpu::bit,		&lr35902_cpu::bit,		&lr35902_cpu::bit,		&lr35902_cpu::bitHL,	&lr35902_cpu::bit,		&lr35902_cpu::bit,		&lr35902_cpu::bit,		&lr35902_cpu::bit,		&lr35902_cpu::bit,		&lr35902_cpu::bit,		&lr35902_cpu::bit,		&lr35902_cpu::bitHL,	&lr35902_cpu::bit,
+	/* 7 */	&lr35902_cpu::bit,		&lr35902_cpu::bit,		&lr35902_cpu::bit,		&lr35902_cpu::bit,		&lr35902_cpu::bit,		&lr35902_cpu::bit,		&lr35902_cpu::bitHL,	&lr35902_cpu::bit,		&lr35902_cpu::bit,		&lr35902_cpu::bit,		&lr35902_cpu::bit,		&lr35902_cpu::bit,		&lr35902_cpu::bit,		&lr35902_cpu::bit,		&lr35902_cpu::bitHL,	&lr35902_cpu::bit,
+	/* 8 */	&lr35902_cpu::res,		&lr35902_cpu::res,		&lr35902_cpu::res,		&lr35902_cpu::res,		&lr35902_cpu::res,		&lr35902_cpu::res,		&lr35902_cpu::resHL,	&lr35902_cpu::res,		&lr35902_cpu::res,		&lr35902_cpu::res,		&lr35902_cpu::res,		&lr35902_cpu::res,		&lr35902_cpu::res,		&lr35902_cpu::res,		&lr35902_cpu::resHL,	&lr35902_cpu::res,
+	/* 9 */	&lr35902_cpu::res,		&lr35902_cpu::res,		&lr35902_cpu::res,		&lr35902_cpu::res,		&lr35902_cpu::res,		&lr35902_cpu::res,		&lr35902_cpu::resHL,	&lr35902_cpu::res,		&lr35902_cpu::res,		&lr35902_cpu::res,		&lr35902_cpu::res,		&lr35902_cpu::res,		&lr35902_cpu::res,		&lr35902_cpu::res,		&lr35902_cpu::resHL,	&lr35902_cpu::res,
+	/* A */	&lr35902_cpu::res,		&lr35902_cpu::res,		&lr35902_cpu::res,		&lr35902_cpu::res,		&lr35902_cpu::res,		&lr35902_cpu::res,		&lr35902_cpu::resHL,	&lr35902_cpu::res,		&lr35902_cpu::res,		&lr35902_cpu::res,		&lr35902_cpu::res,		&lr35902_cpu::res,		&lr35902_cpu::res,		&lr35902_cpu::res,		&lr35902_cpu::resHL,	&lr35902_cpu::res,
+	/* B */	&lr35902_cpu::res,		&lr35902_cpu::res,		&lr35902_cpu::res,		&lr35902_cpu::res,		&lr35902_cpu::res,		&lr35902_cpu::res,		&lr35902_cpu::resHL,	&lr35902_cpu::res,		&lr35902_cpu::res,		&lr35902_cpu::res,		&lr35902_cpu::res,		&lr35902_cpu::res,		&lr35902_cpu::res,		&lr35902_cpu::res,		&lr35902_cpu::resHL,	&lr35902_cpu::res,
+	/* C */	&lr35902_cpu::set,		&lr35902_cpu::set,		&lr35902_cpu::set,		&lr35902_cpu::set,		&lr35902_cpu::set,		&lr35902_cpu::set,		&lr35902_cpu::setHL,	&lr35902_cpu::set,		&lr35902_cpu::set,		&lr35902_cpu::set,		&lr35902_cpu::set,		&lr35902_cpu::set,		&lr35902_cpu::set,		&lr35902_cpu::set,		&lr35902_cpu::setHL,	&lr35902_cpu::set,
+	/* D */	&lr35902_cpu::set,		&lr35902_cpu::set,		&lr35902_cpu::set,		&lr35902_cpu::set,		&lr35902_cpu::set,		&lr35902_cpu::set,		&lr35902_cpu::setHL,	&lr35902_cpu::set,		&lr35902_cpu::set,		&lr35902_cpu::set,		&lr35902_cpu::set,		&lr35902_cpu::set,		&lr35902_cpu::set,		&lr35902_cpu::set,		&lr35902_cpu::setHL,	&lr35902_cpu::set,
+	/* E */	&lr35902_cpu::set,		&lr35902_cpu::set,		&lr35902_cpu::set,		&lr35902_cpu::set,		&lr35902_cpu::set,		&lr35902_cpu::set,		&lr35902_cpu::setHL,	&lr35902_cpu::set,		&lr35902_cpu::set,		&lr35902_cpu::set,		&lr35902_cpu::set,		&lr35902_cpu::set,		&lr35902_cpu::set,		&lr35902_cpu::set,		&lr35902_cpu::setHL,	&lr35902_cpu::set,
+	/* F */	&lr35902_cpu::set,		&lr35902_cpu::set,		&lr35902_cpu::set,		&lr35902_cpu::set,		&lr35902_cpu::set,		&lr35902_cpu::set,		&lr35902_cpu::setHL,	&lr35902_cpu::set,		&lr35902_cpu::set,		&lr35902_cpu::set,		&lr35902_cpu::set,		&lr35902_cpu::set,		&lr35902_cpu::set,		&lr35902_cpu::set,		&lr35902_cpu::setHL,	&lr35902_cpu::set
 };
 
 lr35902_cpu::lr35902_cpu(Memory& memory) : m_memory(memory)
@@ -119,11 +119,13 @@ uint8_t lr35902_cpu::update()
 	return executedCycles;
 }
 
-uint8_t lr35902_cpu::fetchIR() {
+uint8_t lr35902_cpu::fetchIR()
+{
 	return m_registers.IR = read(m_registers.PC++);
 }
 
-uint8_t lr35902_cpu::handleInterrupts() {
+uint8_t lr35902_cpu::handleInterrupts()
+{
 	uint8_t requestedInterrupts = m_memory.read(IE_OFT) & m_memory.read(IF_OFT);
 	static const uint16_t itVector[] = {0x0040, 0x0048, 0x0050, 0x0058, 0x0060};
 
@@ -153,7 +155,8 @@ uint8_t lr35902_cpu::handleInterrupts() {
 	return 0;
 }
 
-void lr35902_cpu::processTimer(uint8_t executedCycles) {
+void lr35902_cpu::processTimer(uint8_t executedCycles)
+{
 
 	m_divRegisterCounter += executedCycles;
 	if (m_divRegisterCounter >= CPU_FREQ / 16384)
@@ -182,7 +185,8 @@ void lr35902_cpu::processTimer(uint8_t executedCycles) {
 	}
 }
 
-void lr35902_cpu::write(uint16_t address, uint8_t data) {
+void lr35902_cpu::write(uint16_t address, uint8_t data)
+{
 	switch(address)
 	{
 		case TAC_OFT:
@@ -208,14 +212,16 @@ void lr35902_cpu::write(uint16_t address, uint8_t data) {
 	}
 }
 
-uint8_t lr35902_cpu::read(uint16_t address) {
+uint8_t lr35902_cpu::read(uint16_t address)
+{
 	if (address == DIV_OFT)
 		return m_registers.divider;
 
 	return m_memory.read(address);
 }
 
-uint8_t lr35902_cpu::getValForReg3b(uint8_t regnum) {
+uint8_t lr35902_cpu::getValForReg3b(uint8_t regnum)
+{
 	switch(regnum) {
 		case 0: return m_registers.BC.b[1]; //B
 		case 1: return m_registers.BC.b[0]; //C
@@ -229,7 +235,8 @@ uint8_t lr35902_cpu::getValForReg3b(uint8_t regnum) {
 	return 0;
 }
 
-uint16_t lr35902_cpu::getValForReg2b(uint8_t regnum) {
+uint16_t lr35902_cpu::getValForReg2b(uint8_t regnum)
+{
 	switch(regnum) {
 		case 0: return m_registers.BC.w;
 		case 1: return m_registers.DE.w;
@@ -240,7 +247,8 @@ uint16_t lr35902_cpu::getValForReg2b(uint8_t regnum) {
 	return 0;
 }
 
-uint8_t lr35902_cpu::getFlags8b() {
+uint8_t lr35902_cpu::getFlags8b()
+{
 	uint8_t flags = 0;
 	if (m_registers.ZF)
 		flags |= 0x80;
@@ -253,16 +261,17 @@ uint8_t lr35902_cpu::getFlags8b() {
 	return flags;
 }
 
-uint8_t lr35902_cpu::nop(uint8_t opcode) {
-	(void) opcode;
+uint8_t lr35902_cpu::nop(uint8_t)
+{
 	return 4;
 }
-uint8_t lr35902_cpu::stop(uint8_t opcode) {
-	(void) opcode;
+uint8_t lr35902_cpu::stop(uint8_t)
+{
 	m_stoped = true;
 	return 4;
 }
-uint8_t lr35902_cpu::jr_r8(uint8_t opcode) {
+uint8_t lr35902_cpu::jr_r8(uint8_t opcode)
+{
 	int8_t r8 = static_cast<int8_t>(fetchIR());
 	switch(opcode) {
 		case 0x18: //JR r8
@@ -289,7 +298,8 @@ uint8_t lr35902_cpu::jr_r8(uint8_t opcode) {
 	return 8;
 }
 
-uint8_t lr35902_cpu::ld_d16(uint8_t opcode) {
+uint8_t lr35902_cpu::ld_d16(uint8_t opcode)
+{
 	uint16_t d16 = fetchIR();
 	d16 |= fetchIR() << 8;
 	switch(opcode) {
@@ -310,7 +320,8 @@ uint8_t lr35902_cpu::ld_d16(uint8_t opcode) {
 	return 16;
 }
 
-uint8_t lr35902_cpu::ld_a(uint8_t opcode) {
+uint8_t lr35902_cpu::ld_a(uint8_t opcode)
+{
 	switch(opcode) {
 		case 0x02: //LD (BC),A
 			write(m_registers.BC.w, m_registers.A);
@@ -347,7 +358,8 @@ uint8_t lr35902_cpu::ld_a(uint8_t opcode) {
 	return 8;
 }
 
-uint8_t lr35902_cpu::inc_16(uint8_t opcode) {
+uint8_t lr35902_cpu::inc_16(uint8_t opcode)
+{
 	switch(opcode) {
 		case 0x03: //INC BC
 			m_registers.BC.w++;
@@ -366,7 +378,8 @@ uint8_t lr35902_cpu::inc_16(uint8_t opcode) {
 	return 8;
 }
 
-uint8_t lr35902_cpu::dec_16(uint8_t opcode) {
+uint8_t lr35902_cpu::dec_16(uint8_t opcode)
+{
 	switch(opcode) {
 		case 0x0B: //DEC BC
 			m_registers.BC.w--;
@@ -385,7 +398,8 @@ uint8_t lr35902_cpu::dec_16(uint8_t opcode) {
 	return 8;
 }
 
-uint8_t lr35902_cpu::inc_8(uint8_t opcode) {
+uint8_t lr35902_cpu::inc_8(uint8_t opcode)
+{
 	switch(opcode) {
 		case 0x04: //INC B
 			m_registers.BC.b[1]++;
@@ -428,8 +442,8 @@ uint8_t lr35902_cpu::inc_8(uint8_t opcode) {
 	return 4;
 }
 
-uint8_t lr35902_cpu::inc_hl(uint8_t opcode) {
-	(void) opcode;
+uint8_t lr35902_cpu::inc_hl(uint8_t)
+{
 	uint8_t val = read(m_registers.HL.w);
 	uint8_t res = val + 1;
 	write(m_registers.HL.w, res);
@@ -442,7 +456,8 @@ uint8_t lr35902_cpu::inc_hl(uint8_t opcode) {
 }
 
 
-uint8_t lr35902_cpu::dec_8(uint8_t opcode) {
+uint8_t lr35902_cpu::dec_8(uint8_t opcode)
+{
 	switch(opcode) {
 		case 0x05: //DEC B
 			m_registers.BC.b[1]--;
@@ -485,8 +500,8 @@ uint8_t lr35902_cpu::dec_8(uint8_t opcode) {
 	return 4;
 }
 
-uint8_t lr35902_cpu::dec_hl(uint8_t opcode) {
-	(void) opcode;
+uint8_t lr35902_cpu::dec_hl(uint8_t)
+{
 	uint8_t val = read(m_registers.HL.w);
 	uint8_t res = val - 1;
 	write(m_registers.HL.w, res);
@@ -498,7 +513,8 @@ uint8_t lr35902_cpu::dec_hl(uint8_t opcode) {
 	return 12;
 }
 
-uint8_t lr35902_cpu::ld_d8(uint8_t opcode) {
+uint8_t lr35902_cpu::ld_d8(uint8_t opcode)
+{
 	uint8_t d8 = fetchIR();
 	switch(opcode) {
 		case 0x06: //LD B,d8
@@ -530,8 +546,8 @@ uint8_t lr35902_cpu::ld_d8(uint8_t opcode) {
 	return 8;
 }
 
-uint8_t lr35902_cpu::rlca(uint8_t opcode) {
-	(void) opcode;
+uint8_t lr35902_cpu::rlca(uint8_t)
+{
 	if (m_registers.A & 0x80) {
 		m_registers.CY = true;
 		m_registers.A = (m_registers.A << 1) | 0x01;
@@ -545,8 +561,8 @@ uint8_t lr35902_cpu::rlca(uint8_t opcode) {
 	return 4;
 }
 
-uint8_t lr35902_cpu::rla(uint8_t opcode) {
-	(void) opcode;
+uint8_t lr35902_cpu::rla(uint8_t)
+{
 	uint8_t orByte = (m_registers.CY) ? 0x01 : 0x00;
 	m_registers.CY = (m_registers.A & 0x80) != 0;
 	m_registers.A = (m_registers.A << 1) | orByte;
@@ -556,8 +572,8 @@ uint8_t lr35902_cpu::rla(uint8_t opcode) {
 	return 4;
 }
 
-uint8_t lr35902_cpu::rrca(uint8_t opcode) {
-	(void) opcode;
+uint8_t lr35902_cpu::rrca(uint8_t)
+{
 	if (m_registers.A & 0x01) {
 		m_registers.CY = true;
 		m_registers.A = (m_registers.A >> 1) | 0x80;
@@ -571,8 +587,8 @@ uint8_t lr35902_cpu::rrca(uint8_t opcode) {
 	return 4;
 }
 
-uint8_t lr35902_cpu::rra(uint8_t opcode) {
-	(void) opcode;
+uint8_t lr35902_cpu::rra(uint8_t)
+{
 	uint8_t orbyte = (m_registers.CY) ? 0x80 : 0x00;
 	m_registers.CY = (m_registers.A & 0x01);
 	m_registers.A = (m_registers.A >> 1) | orbyte;
@@ -582,8 +598,8 @@ uint8_t lr35902_cpu::rra(uint8_t opcode) {
 	return 4;
 }
 
-uint8_t lr35902_cpu::daa(uint8_t opcode) {
-	(void) opcode;
+uint8_t lr35902_cpu::daa(uint8_t)
+{
 	uint16_t correction = (m_registers.CY) ? 0x60 : 0x0;
 	int16_t res;
 
@@ -612,32 +628,32 @@ uint8_t lr35902_cpu::daa(uint8_t opcode) {
 	return 4;
 }
 
-uint8_t lr35902_cpu::scf(uint8_t opcode) {
-	(void) opcode;
+uint8_t lr35902_cpu::scf(uint8_t)
+{
 	m_registers.N = false;
 	m_registers.H = false;
 	m_registers.CY = true;
 	return 4;
 }
 
-uint8_t lr35902_cpu::cpl(uint8_t opcode) {
-	(void) opcode;
+uint8_t lr35902_cpu::cpl(uint8_t)
+{
 	m_registers.A = ~m_registers.A;
 	m_registers.N = true;
 	m_registers.H = true;
 	return 4;
 }
 
-uint8_t lr35902_cpu::ccf(uint8_t opcode) {
-	(void) opcode;
+uint8_t lr35902_cpu::ccf(uint8_t)
+{
 	m_registers.N = false;
 	m_registers.H = false;
 	m_registers.CY = !m_registers.CY;
 	return 4;
 }
 
-uint8_t lr35902_cpu::ld_a16_sp(uint8_t opcode) {
-	(void) opcode;
+uint8_t lr35902_cpu::ld_a16_sp(uint8_t)
+{
 	uint16_t a16 = fetchIR();
 	a16 |= fetchIR() << 8;
 	write(a16++, m_registers.SP.b[0]);
@@ -645,7 +661,8 @@ uint8_t lr35902_cpu::ld_a16_sp(uint8_t opcode) {
 	return 20;
 }
 
-uint8_t lr35902_cpu::add_hl(uint8_t opcode) {
+uint8_t lr35902_cpu::add_hl(uint8_t opcode)
+{
 	uint16_t sum;
 	uint16_t HL = m_registers.HL.w;
 	switch(opcode) {
@@ -671,7 +688,8 @@ uint8_t lr35902_cpu::add_hl(uint8_t opcode) {
 	return 8;
 }
 
-uint8_t lr35902_cpu::ld_reg8(uint8_t opcode) {
+uint8_t lr35902_cpu::ld_reg8(uint8_t opcode)
+{
 	uint8_t r1 = (opcode >> 3) & 0x07;
 	uint8_t r2 = opcode & 0x07;
 	uint8_t r2val;
@@ -695,14 +713,15 @@ uint8_t lr35902_cpu::ld_reg8(uint8_t opcode) {
 	return clkCycles;
 }
 
-uint8_t lr35902_cpu::halt(uint8_t opcode) {
-	(void) opcode;
+uint8_t lr35902_cpu::halt(uint8_t)
+{
 	//FIXME Decrease PC and execute again for each pending interrup before suspending...
 	m_halted = true;
 	return 4;
 }
 
-uint8_t lr35902_cpu::add_a(uint8_t opcode) {
+uint8_t lr35902_cpu::add_a(uint8_t opcode)
+{
 	uint8_t A = m_registers.A;
 	uint8_t r = opcode & 0x07;
 	uint8_t rval;
@@ -722,7 +741,8 @@ uint8_t lr35902_cpu::add_a(uint8_t opcode) {
 	return (opcode != 0xC6 && r != 6) ? 4 : 8;
 }
 
-uint8_t lr35902_cpu::sub(uint8_t opcode) {
+uint8_t lr35902_cpu::sub(uint8_t opcode)
+{
 	uint8_t A = m_registers.A;
 	uint8_t r = opcode & 0x07;
 	uint8_t rval;
@@ -742,7 +762,8 @@ uint8_t lr35902_cpu::sub(uint8_t opcode) {
 	return (opcode != 0xD6 && r != 6) ? 4 : 8;
 }
 
-uint8_t lr35902_cpu::adc(uint8_t opcode) {
+uint8_t lr35902_cpu::adc(uint8_t opcode)
+{
 	uint16_t res;
 	uint8_t r = opcode & 0x07;
 	uint8_t rval;
@@ -766,7 +787,8 @@ uint8_t lr35902_cpu::adc(uint8_t opcode) {
 	return (opcode != 0xCE && opcode != 0x8E) ? 4 : 8;
 }
 
-uint8_t lr35902_cpu::sbc(uint8_t opcode) {
+uint8_t lr35902_cpu::sbc(uint8_t opcode)
+{
 	int16_t res;
 	uint8_t r = opcode & 0x07;
 	uint8_t rval;
@@ -790,7 +812,8 @@ uint8_t lr35902_cpu::sbc(uint8_t opcode) {
 	return (opcode != 0xDE && opcode != 0x9E) ? 4 : 8;
 }
 
-uint8_t lr35902_cpu::and_a(uint8_t opcode) {
+uint8_t lr35902_cpu::and_a(uint8_t opcode)
+{
 	uint8_t r = opcode & 0x7;
 	uint8_t rval;
 
@@ -809,7 +832,8 @@ uint8_t lr35902_cpu::and_a(uint8_t opcode) {
 	return (opcode != 0xE6 && r == 6) ? 8 : 4;
 }
 
-uint8_t lr35902_cpu::xor_a(uint8_t opcode) {
+uint8_t lr35902_cpu::xor_a(uint8_t opcode)
+{
 	uint8_t r = opcode & 0x7;
 	uint8_t rval;
 
@@ -828,7 +852,8 @@ uint8_t lr35902_cpu::xor_a(uint8_t opcode) {
 	return (opcode != 0xEE && r != 6) ? 4 : 8;
 }
 
-uint8_t lr35902_cpu::or_a(uint8_t opcode) {
+uint8_t lr35902_cpu::or_a(uint8_t opcode)
+{
 	uint8_t r = opcode & 0x7;
 	uint8_t rval;
 
@@ -847,7 +872,8 @@ uint8_t lr35902_cpu::or_a(uint8_t opcode) {
 	return (opcode != 0xF6 && r != 6) ? 4 : 8;
 }
 
-uint8_t lr35902_cpu::cp(uint8_t opcode) {
+uint8_t lr35902_cpu::cp(uint8_t opcode)
+{
 	uint8_t A = m_registers.A;
 	uint8_t r = opcode & 0x07;
 	uint8_t rval;
@@ -868,7 +894,8 @@ uint8_t lr35902_cpu::cp(uint8_t opcode) {
 	return (opcode != 0xFE && r != 6) ? 4 : 8;
 }
 
-uint8_t lr35902_cpu::pop(uint8_t opcode) {
+uint8_t lr35902_cpu::pop(uint8_t opcode)
+{
 
 	uint8_t r = (opcode >> 4)&0x03;
 
@@ -899,7 +926,8 @@ uint8_t lr35902_cpu::pop(uint8_t opcode) {
 	return 12;
 }
 
-uint8_t lr35902_cpu::push(uint8_t opcode) {
+uint8_t lr35902_cpu::push(uint8_t opcode)
+{
 	uint8_t r = (opcode >> 4)&0x03;
 	uint16_t val = getValForReg2b(r);
 
@@ -909,7 +937,8 @@ uint8_t lr35902_cpu::push(uint8_t opcode) {
 	return 12;
 }
 
-uint8_t lr35902_cpu::ret_cc(uint8_t opcode) {
+uint8_t lr35902_cpu::ret_cc(uint8_t opcode)
+{
 	bool retOK = false;
 	if (opcode == 0xC0)
 		retOK = !m_registers.ZF;
@@ -929,13 +958,15 @@ uint8_t lr35902_cpu::ret_cc(uint8_t opcode) {
 		return 8;
 }
 
-uint8_t lr35902_cpu::invalid(uint8_t opcode) {
+uint8_t lr35902_cpu::invalid(uint8_t opcode)
+{
 	m_halted = true;
 	OPCODEERROR("invalid", opcode);
 	return 4;
 }
 
-uint8_t lr35902_cpu::ldh(uint8_t opcode) {
+uint8_t lr35902_cpu::ldh(uint8_t opcode)
+{
 	uint16_t val = 0xFF00 + fetchIR();
 	if(opcode == 0xE0) { //LDH (a8), A
 		write(val, m_registers.A);
@@ -946,7 +977,8 @@ uint8_t lr35902_cpu::ldh(uint8_t opcode) {
 	return 12;
 }
 
-uint8_t lr35902_cpu::jp_cc_a16(uint8_t opcode) {
+uint8_t lr35902_cpu::jp_cc_a16(uint8_t opcode)
+{
 	uint16_t a16 = fetchIR();
 	a16 |= fetchIR() << 8;
 
@@ -968,7 +1000,8 @@ uint8_t lr35902_cpu::jp_cc_a16(uint8_t opcode) {
 		return 12;
 
 }
-uint8_t lr35902_cpu::call_a16 (uint8_t opcode) {
+uint8_t lr35902_cpu::call_a16(uint8_t opcode)
+{
 	uint16_t a16 = fetchIR();
 	a16 |= fetchIR() << 8;
 	bool jpOk = false;
@@ -993,7 +1026,8 @@ uint8_t lr35902_cpu::call_a16 (uint8_t opcode) {
 		return 12;
 }
 
-uint8_t lr35902_cpu::rst(uint8_t opcode) {
+uint8_t lr35902_cpu::rst(uint8_t opcode)
+{
 	static const uint8_t address[8] {
 		0x00, 0x08, 0x10, 0x18,
 		0x20, 0x28, 0x30, 0x38
@@ -1007,20 +1041,20 @@ uint8_t lr35902_cpu::rst(uint8_t opcode) {
 	return 16;
 }
 
-uint8_t lr35902_cpu::di(uint8_t opcode) {
-	(void) opcode;
+uint8_t lr35902_cpu::di(uint8_t)
+{
 	m_maskInterrupts = true;
 	return 4;
 }
 
-uint8_t lr35902_cpu::ei(uint8_t opcode) {
-	(void) opcode;
+uint8_t lr35902_cpu::ei(uint8_t)
+{
 	m_unMaskInterrupts = true;
 	return 4;
 }
 
-uint8_t lr35902_cpu::add_sp_r8(uint8_t opcode) {
-	(void) opcode;
+uint8_t lr35902_cpu::add_sp_r8(uint8_t)
+{
 	int8_t offset = static_cast<int8_t>(fetchIR());
 	uint16_t SP = m_registers.SP.w;
 	m_registers.SP.w += offset;
@@ -1032,14 +1066,14 @@ uint8_t lr35902_cpu::add_sp_r8(uint8_t opcode) {
 	return 16;
 }
 
-uint8_t lr35902_cpu::jp_hl(uint8_t opcode) {
-	(void) opcode;
+uint8_t lr35902_cpu::jp_hl(uint8_t)
+{
 	m_registers.PC = m_registers.HL.w;
 	return 4;
 }
 
-uint8_t lr35902_cpu::ldhl_spr8(uint8_t opcode) {
-	(void) opcode;
+uint8_t lr35902_cpu::ldhl_spr8(uint8_t)
+{
 	int8_t r8 = static_cast<int8_t>(fetchIR());
 	m_registers.HL.w = m_registers.SP.w + r8;
 
@@ -1051,13 +1085,14 @@ uint8_t lr35902_cpu::ldhl_spr8(uint8_t opcode) {
 	return 12;
 }
 
-uint8_t lr35902_cpu::ld_sp_hl(uint8_t opcode) {
-	(void) opcode;
+uint8_t lr35902_cpu::ld_sp_hl(uint8_t)
+{
 	m_registers.SP.w = m_registers.HL.w;
 	return 8;
 }
 
-uint8_t lr35902_cpu::ld_a_a16(uint8_t opcode) {
+uint8_t lr35902_cpu::ld_a_a16(uint8_t opcode)
+{
 	uint16_t a16 = fetchIR();
 	a16 |= fetchIR() << 8;
 
@@ -1068,9 +1103,8 @@ uint8_t lr35902_cpu::ld_a_a16(uint8_t opcode) {
 	return 16;
 }
 
-uint8_t lr35902_cpu::jp_a16(uint8_t opcode)
+uint8_t lr35902_cpu::jp_a16(uint8_t)
 {
-	(void) opcode;
 	uint16_t a16 = fetchIR();
 	a16 |= fetchIR() << 8;
 	m_registers.PC = a16;
@@ -1078,18 +1112,17 @@ uint8_t lr35902_cpu::jp_a16(uint8_t opcode)
 	return 16;
 }
 
-uint8_t lr35902_cpu::ret(uint8_t opcode)
+uint8_t lr35902_cpu::ret(uint8_t)
 {
-	(void) opcode;
 	uint16_t PC = read(m_registers.SP.w++);
 	PC |= read(m_registers.SP.w++) << 8;
 	m_registers.PC = PC;
 	return 16;
 }
 
-uint8_t lr35902_cpu::reti(uint8_t opcode)
+uint8_t lr35902_cpu::reti(uint8_t)
 {
-	ret(opcode);
+	ret(0);
 	m_maskedInterrupts = false;
 	return 16;
 }
@@ -1097,483 +1130,303 @@ uint8_t lr35902_cpu::reti(uint8_t opcode)
 /***********************************************
 *** 		START OF CB INSTRUCTIONS 		****
 ***********************************************/
-uint8_t lr35902_cpu::cb(uint8_t opcode) {
-	(void) opcode;
+uint8_t lr35902_cpu::cb(uint8_t)
+{
 	uint8_t cbinst = fetchIR();
 	return (*this.*cb_handlers[cbinst])(cbinst);
 }
 
-uint8_t lr35902_cpu::rlc(uint8_t opcode) {
+uint8_t lr35902_cpu::rlc(uint8_t opcode)
+{
 	uint8_t reg = opcode & 0x7;
-	uint8_t original, shifted;
+	uint8_t data = m_8b_reg_map[reg];
 
-	switch(reg)
-	{
-		case 0: //B
-			original = m_registers.BC.b[1];
-			shifted = m_registers.BC.b[1] = (original << 1) | ((original & 0x80) ? 1 : 0);
-			break;
-		case 1: //C
-			original = m_registers.BC.b[0];
-			shifted = m_registers.BC.b[0] = (original << 1) | ((original & 0x80) ? 1 : 0);
-			break;
-		case 2: //D
-			original = m_registers.DE.b[1];
-			shifted = m_registers.DE.b[1] = (original << 1) | ((original & 0x80) ? 1 : 0);
-			break;
-		case 3: //E
-			original = m_registers.DE.b[0];
-			shifted = m_registers.DE.b[0] = (original << 1) | ((original & 0x80) ? 1 : 0);
-			break;
-		case 4: //H
-			original = m_registers.HL.b[1];
-			shifted = m_registers.HL.b[1] = (original << 1) | ((original & 0x80) ? 1 : 0);
-			break;
-		case 5: //L
-			original = m_registers.HL.b[0];
-			shifted = m_registers.HL.b[0] = (original << 1) | ((original & 0x80) ? 1 : 0);
-			break;
-		case 6: //(HL)
-			original = read(m_registers.HL.w);
-			shifted = (original << 1) | ((original & 0x80) ? 1 : 0);
-			write(m_registers.HL.w, shifted);
-			break;
-		case 7: //A
- 			original = m_registers.A;
-			shifted = m_registers.A = (original << 1) | ((original & 0x80) ? 1 : 0);
-			break;
-	}
-	m_registers.CY = (original & 0x80) != 0;
+	m_8b_reg_map[reg].get() = (data << 1) | ((data & 0x80) ? 1 : 0);
+
+	m_registers.CY = (data & 0x80) != 0;
+	m_registers.N = false;
+	m_registers.H = false;
+	m_registers.ZF = (m_8b_reg_map[reg] == 0);
+
+	return 8;
+}
+
+uint8_t lr35902_cpu::rlcHL(uint8_t)
+{
+	uint8_t shifted;
+	uint8_t data = read(m_registers.HL.w);
+
+	shifted = (data << 1) | ((data & 0x80) ? 1 : 0);
+	write(m_registers.HL.w, shifted);
+
+	m_registers.CY = (data & 0x80) != 0;
 	m_registers.N = false;
 	m_registers.H = false;
 	m_registers.ZF = (shifted == 0);
-	return (reg == 6) ? 16 : 8;
+
+	return 16;
 }
 
-uint8_t lr35902_cpu::rrc(uint8_t opcode) {
+uint8_t lr35902_cpu::rrc(uint8_t opcode)
+{
 	uint8_t reg = opcode & 0x7;
-	uint8_t original, shifted;
+	uint8_t data = m_8b_reg_map[reg];
 
-	switch(reg)
-	{
-		case 0: //B
-			original = m_registers.BC.b[1];
-			shifted = m_registers.BC.b[1] = (original >> 1) | ((original & 0x01) ? 0x80 : 0);
-			break;
-		case 1: //C
-			original = m_registers.BC.b[0];
-			shifted = m_registers.BC.b[0] = (original >> 1) | ((original & 0x01) ? 0x80 : 0);
-			break;
-		case 2: //D
-			original = m_registers.DE.b[1];
-			shifted = m_registers.DE.b[1] = (original >> 1) | ((original & 0x01) ? 0x80 : 0);
-			break;
-		case 3: //E
-			original = m_registers.DE.b[0];
-			shifted = m_registers.DE.b[0] = (original >> 1) | ((original & 0x01) ? 0x80 : 0);
-			break;
-		case 4: //H
-			original = m_registers.HL.b[1];
-			shifted = m_registers.HL.b[1] = (original >> 1) | ((original & 0x01) ? 0x80 : 0);
-			break;
-		case 5: //L
-			original = m_registers.HL.b[0];
-			shifted = m_registers.HL.b[0] = (original >> 1) | ((original & 0x01) ? 0x80 : 0);
-			break;
-		case 6: //(HL)
-			original = read(m_registers.HL.w);
-			shifted = (original >> 1) | ((original & 0x01) ? 0x80 : 0);
-			write(m_registers.HL.w, shifted);
-			break;
-		case 7: //A
-			original = m_registers.A;
-			shifted = m_registers.A = (original >> 1) | ((original & 0x01) ? 0x80 : 0);
-			break;
-	}
-	m_registers.CY = (original & 0x01);
+	m_8b_reg_map[reg].get() = (data >> 1) | ((data & 0x01) ? 0x80 : 0);
+
+	m_registers.CY = (data & 0x01);
+	m_registers.N = false;
+	m_registers.H = false;
+	m_registers.ZF = (m_8b_reg_map[reg] == 0);
+
+	return 8;
+}
+
+uint8_t lr35902_cpu::rrcHL(uint8_t)
+{
+	uint8_t shifted;
+	uint8_t data = read(m_registers.HL.w);
+
+	shifted = (data >> 1) | ((data & 0x01) ? 0x80 : 0);
+	write(m_registers.HL.w, shifted);
+
+	m_registers.CY = (data & 0x01);
 	m_registers.N = false;
 	m_registers.H = false;
 	m_registers.ZF = (shifted == 0);
-	return (reg == 6) ? 16 : 8;
+
+	return 16;
 }
 
-uint8_t lr35902_cpu::rl(uint8_t opcode) {
+uint8_t lr35902_cpu::rl(uint8_t opcode)
+{
 	uint8_t reg = opcode & 0x7;
-	uint8_t original, shifted;
+	uint8_t data = m_8b_reg_map[reg];
 
-	switch(reg)
-	{
-		case 0: //B
-			original = m_registers.BC.b[1];
-			shifted = m_registers.BC.b[1] = (original << 1) | ((m_registers.CY) ? 1 : 0);
-			break;
-		case 1: //C
-			original = m_registers.BC.b[0];
-			shifted = m_registers.BC.b[0] = (original << 1) | ((m_registers.CY) ? 1 : 0);
-			break;
-		case 2: //D
-			original = m_registers.DE.b[1];
-			shifted = m_registers.DE.b[1] = (original << 1) | ((m_registers.CY) ? 1 : 0);
-			break;
-		case 3: //E
-			original = m_registers.DE.b[0];
-			shifted = m_registers.DE.b[0] = (original << 1) | ((m_registers.CY) ? 1 : 0);
-			break;
-		case 4: //H
-			original = m_registers.HL.b[1];
-			shifted = m_registers.HL.b[1] = (original << 1) | ((m_registers.CY) ? 1 : 0);
-			break;
-		case 5: //L
-			original = m_registers.HL.b[0];
-			shifted = m_registers.HL.b[0] = (original << 1) | ((m_registers.CY) ? 1 : 0);
-			break;
-		case 6: //(HL)
-			original = read(m_registers.HL.w);
-			shifted = (original << 1) | ((m_registers.CY) ? 1 : 0);
-			write(m_registers.HL.w, shifted);
-			break;
-		case 7: //A
-			original = m_registers.A;
-			shifted = m_registers.A = (original << 1) | ((m_registers.CY) ? 1 : 0);
-			break;
-	}
-	m_registers.CY = (original & 0x80) != 0;
+	m_8b_reg_map[reg].get() = (data << 1) | ((m_registers.CY) ? 1 : 0);
+
+	m_registers.CY = (data & 0x80) != 0;
+	m_registers.N = false;
+	m_registers.H = false;
+
+	return 8;
+}
+
+
+uint8_t lr35902_cpu::rlHL(uint8_t)
+{
+	uint8_t shifted;
+	uint8_t data = read(m_registers.HL.w);
+
+	shifted = (data << 1) | ((m_registers.CY) ? 1 : 0);
+	write(m_registers.HL.w, shifted);
+
+	m_registers.CY = (data & 0x80) != 0;
 	m_registers.N = false;
 	m_registers.H = false;
 	m_registers.ZF = (shifted == 0);
-	return (reg == 6) ? 16 : 8;
+
+	return 16;
 }
 
-uint8_t lr35902_cpu::rr(uint8_t opcode) {
+uint8_t lr35902_cpu::rr(uint8_t opcode)
+{
 	uint8_t reg = opcode & 0x7;
-	uint8_t original, shifted;
+	uint8_t data = m_8b_reg_map[reg];
 
-	switch(reg)
-	{
-		case 0: //B
-			original = m_registers.BC.b[1];
-			shifted = m_registers.BC.b[1] = (original >> 1) | ((m_registers.CY) ? 0x80 : 0);
-			break;
-		case 1: //C
-			original = m_registers.BC.b[0];
-			shifted = m_registers.BC.b[0] = (original >> 1) | ((m_registers.CY) ? 0x80 : 0);
-			break;
-		case 2: //D
-			original = m_registers.DE.b[1];
-			shifted = m_registers.DE.b[1] = (original >> 1) | ((m_registers.CY) ? 0x80 : 0);
-			break;
-		case 3: //E
-			original = m_registers.DE.b[0];
-			shifted = m_registers.DE.b[0] = (original >> 1) | ((m_registers.CY) ? 0x80 : 0);
-			break;
-		case 4: //H
-			original = m_registers.HL.b[1];
-			shifted = m_registers.HL.b[1] = (original >> 1) | ((m_registers.CY) ? 0x80 : 0);
-			break;
-		case 5: //L
-			original = m_registers.HL.b[0];
-			shifted = m_registers.HL.b[0] = (original >> 1) | ((m_registers.CY) ? 0x80 : 0);
-			break;
-		case 6: //(HL)
-			original = read(m_registers.HL.w);
-			shifted = (original >> 1) | ((m_registers.CY) ? 0x80 : 0);
-			write(m_registers.HL.w, shifted);
-			break;
-		case 7: //A
-			original = m_registers.A;
-			shifted = m_registers.A = (original >> 1) | ((m_registers.CY) ? 0x80 : 0);
-			break;
-	}
-	m_registers.CY = (original & 0x01);
+	m_8b_reg_map[reg].get() = (data >> 1) | ((m_registers.CY) ? 0x80 : 0);
+
+	m_registers.CY = (data & 0x01);
+	m_registers.N = false;
+	m_registers.H = false;
+	m_registers.ZF = (m_8b_reg_map[reg] == 0);
+
+	return 8;
+}
+
+uint8_t lr35902_cpu::rrHL(uint8_t)
+{
+	uint8_t shifted;
+	uint8_t data = read(m_registers.HL.w);
+
+	shifted = (data >> 1) | ((m_registers.CY) ? 0x80 : 0);
+	write(m_registers.HL.w, shifted);
+
+	m_registers.CY = (data & 0x01);
 	m_registers.N = false;
 	m_registers.H = false;
 	m_registers.ZF = (shifted == 0);
-	return (reg == 6) ? 16 : 8;
+
+	return 16;
 }
 
-uint8_t lr35902_cpu::sla(uint8_t opcode) {
+uint8_t lr35902_cpu::sla(uint8_t opcode)
+{
 	uint8_t reg = opcode & 0x7;
-	uint8_t original, shifted;
+	uint8_t data = m_8b_reg_map[reg];
 
-	switch(reg)
-	{
-		case 0: //B
-			original = m_registers.BC.b[1];
-			shifted = m_registers.BC.b[1] = (original << 1);
-			break;
-		case 1: //C
-			original = m_registers.BC.b[0];
-			shifted = m_registers.BC.b[0] = (original << 1);
-			break;
-		case 2: //D
-			original = m_registers.DE.b[1];
-			shifted = m_registers.DE.b[1] = (original << 1);
-			break;
-		case 3: //E
-			original = m_registers.DE.b[0];
-			shifted = m_registers.DE.b[0] = (original << 1);
-			break;
-		case 4: //H
-			original = m_registers.HL.b[1];
-			shifted = m_registers.HL.b[1] = (original << 1);
-			break;
-		case 5: //L
-			original = m_registers.HL.b[0];
-			shifted = m_registers.HL.b[0] = (original << 1);
-			break;
-		case 6: //(HL)
-			original = read(m_registers.HL.w);
-			shifted = (original << 1);
-			write(m_registers.HL.w, shifted);
-			break;
-		case 7: //A
-			original = m_registers.A;
-			shifted = m_registers.A = (original << 1);
-			break;
-	}
-	m_registers.CY = (original & 0x80) != 0;
+	m_8b_reg_map[reg].get() = (data << 1);
+
+	m_registers.CY = (data & 0x80) != 0;
+	m_registers.N = false;
+	m_registers.H = false;
+	m_registers.ZF = (m_8b_reg_map[reg] == 0);
+
+	return 8;
+}
+
+uint8_t lr35902_cpu::slaHL(uint8_t)
+{
+	uint8_t shifted;
+	uint8_t data = read(m_registers.HL.w);
+
+	shifted = (data << 1);
+	write(m_registers.HL.w, shifted);
+
+	m_registers.CY = (data & 0x80) != 0;
 	m_registers.N = false;
 	m_registers.H = false;
 	m_registers.ZF = (shifted == 0);
-	return (reg == 6) ? 16 : 8;
+
+	return 16;
 }
 
-uint8_t lr35902_cpu::sra(uint8_t opcode) {
+uint8_t lr35902_cpu::sra(uint8_t opcode)
+{
 	uint8_t reg = opcode & 0x7;
-	uint8_t original, shifted;
+	uint8_t data = m_8b_reg_map[reg];
 
-	switch(reg)
-	{
-		case 0: //B
-			original = m_registers.BC.b[1];
-			shifted = m_registers.BC.b[1] = (original >> 1) | ((original&0x80) ? 0x80 : 0);
-			break;
-		case 1: //C
-			original = m_registers.BC.b[0];
-			shifted = m_registers.BC.b[0] = (original >> 1) | ((original&0x80) ? 0x80 : 0);
-			break;
-		case 2: //D
-			original = m_registers.DE.b[1];
-			shifted = m_registers.DE.b[1] = (original >> 1) | ((original&0x80) ? 0x80 : 0);
-			break;
-		case 3: //E
-			original = m_registers.DE.b[0];
-			shifted = m_registers.DE.b[0] = (original >> 1) | ((original&0x80) ? 0x80 : 0);
-			break;
-		case 4: //H
-			original = m_registers.HL.b[1];
-			shifted = m_registers.HL.b[1] = (original >> 1) | ((original&0x80) ? 0x80 : 0);
-			break;
-		case 5: //L
-			original = m_registers.HL.b[0];
-			shifted = m_registers.HL.b[0] = (original >> 1) | ((original&0x80) ? 0x80 : 0);
-			break;
-		case 6: //(HL)
-			original = read(m_registers.HL.w);
-			shifted = (original >> 1) | ((original&0x80) ? 0x80 : 0);
-			write(m_registers.HL.w, shifted);
-			break;
-		case 7: //A
-			original = m_registers.A;
-			shifted = m_registers.A = (original >> 1) | ((original&0x80) ? 0x80 : 0);
-			break;
-	}
-	m_registers.CY = (original & 0x01);
+	m_8b_reg_map[reg].get() = (data >> 1) | ((data & 0x80) ? 0x80 : 0);
+
+	m_registers.CY = (data & 0x01);
+	m_registers.N = false;
+	m_registers.H = false;
+	m_registers.ZF = (m_8b_reg_map[reg] == 0);
+
+	return 8;
+}
+
+uint8_t lr35902_cpu::sraHL(uint8_t)
+{
+	uint8_t shifted;
+	uint8_t data = read(m_registers.HL.w);
+
+	shifted = (data >> 1) | ((data & 0x80) ? 0x80 : 0);
+	write(m_registers.HL.w, shifted);
+
+	m_registers.CY = (data & 0x01);
 	m_registers.N = false;
 	m_registers.H = false;
 	m_registers.ZF = (shifted == 0);
-	return (reg == 6) ? 16 : 8;
+	return 16;
 }
 
-uint8_t lr35902_cpu::swap(uint8_t opcode) {
+uint8_t lr35902_cpu::swap(uint8_t opcode)
+{
 	uint8_t reg = opcode & 0x7;
+
+	m_8b_reg_map[reg].get() = (m_8b_reg_map[reg] >> 4) | (m_8b_reg_map[reg] << 4);
+
+	m_registers.CY = false;
+	m_registers.N = false;
+	m_registers.H = false;
+	m_registers.ZF = (m_8b_reg_map[reg] == 0);
+
+	return 8;
+}
+
+uint8_t lr35902_cpu::swapHL(uint8_t)
+{
 	uint8_t swapped;
+	uint8_t data = read(m_registers.HL.w);
 
-	switch(reg)
-	{
-		case 0: //B
-			swapped = m_registers.BC.b[1] = (m_registers.BC.b[1] >> 4) | (m_registers.BC.b[1] << 4);
-			break;
-		case 1: //C
-			swapped = m_registers.BC.b[0] = (m_registers.BC.b[0] >> 4) | (m_registers.BC.b[0] << 4);
-			break;
-		case 2: //D
-			swapped = m_registers.DE.b[1] = (m_registers.DE.b[1] >> 4) | (m_registers.DE.b[1] << 4);
-			break;
-		case 3: //E
-			swapped = m_registers.DE.b[0] = (m_registers.DE.b[0] >> 4) | (m_registers.DE.b[0] << 4);
-			break;
-		case 4: //H
-			swapped = m_registers.HL.b[1] = (m_registers.HL.b[1] >> 4) | (m_registers.HL.b[1] << 4);
-			break;
-		case 5: //L
-			swapped = m_registers.HL.b[0] = (m_registers.HL.b[0] >> 4) | (m_registers.HL.b[0] << 4);
-			break;
-		case 6: //(HL)
-			{
-				uint8_t data = read(m_registers.HL.w);
-				swapped = (data >> 4) | (data << 4);
-				write(m_registers.HL.w, swapped);
-			}
-			break;
-		case 7: //A
-			swapped = m_registers.A = (m_registers.A >> 4) | (m_registers.A << 4);
-			break;
-	}
+	swapped = (data >> 4) | (data << 4);
+	write(m_registers.HL.w, swapped);
+
 	m_registers.CY = false;
 	m_registers.N = false;
 	m_registers.H = false;
 	m_registers.ZF = (swapped == 0);
-	return (reg == 6) ? 16 : 8;
+
+	return 16;
 }
 
-uint8_t lr35902_cpu::srl(uint8_t opcode) {
+uint8_t lr35902_cpu::srl(uint8_t opcode)
+{
 	uint8_t reg = opcode & 0x7;
-	uint8_t original, shifted;
+	uint8_t data = m_8b_reg_map[reg];
 
-	switch(reg)
-	{
-		case 0: //B
-			original = m_registers.BC.b[1];
-			shifted = m_registers.BC.b[1] = (original >> 1);
-			break;
-		case 1: //C
-			original = m_registers.BC.b[0];
-			shifted = m_registers.BC.b[0] = (original >> 1);
-			break;
-		case 2: //D
-			original = m_registers.DE.b[1];
-			shifted = m_registers.DE.b[1] = (original >> 1);
-			break;
-		case 3: //E
-			original = m_registers.DE.b[0];
-			shifted = m_registers.DE.b[0] = (original >> 1);
-			break;
-		case 4: //H
-			original = m_registers.HL.b[1];
-			shifted = m_registers.HL.b[1] = (original >> 1);
-			break;
-		case 5: //L
-			original = m_registers.HL.b[0];
-			shifted = m_registers.HL.b[0] = (original >> 1);
-			break;
-		case 6: //(HL)
-			original = read(m_registers.HL.w);
-			shifted = (original >> 1);
-			write(m_registers.HL.w, shifted);
-			break;
-		case 7: //A
-			original = m_registers.A;
-			shifted = m_registers.A = (original >> 1);
-			break;
-	}
-	m_registers.CY = (original & 0x01);
+	m_8b_reg_map[reg].get() = (data >> 1);
+
+	m_registers.CY = (data & 0x01);
+	m_registers.N = false;
+	m_registers.H = false;
+	m_registers.ZF = (m_8b_reg_map[reg] == 0);
+	return 8;
+}
+
+uint8_t lr35902_cpu::srlHL(uint8_t)
+{
+	uint8_t data = read(m_registers.HL.w);
+	uint8_t shifted = (data >> 1);
+
+	write(m_registers.HL.w, shifted);
+
+	m_registers.CY = (data & 0x01);
 	m_registers.N = false;
 	m_registers.H = false;
 	m_registers.ZF = (shifted == 0);
-	return (reg == 6) ? 16 : 8;
+	return 16;
 }
 
-uint8_t lr35902_cpu::bit(uint8_t opcode) {
+uint8_t lr35902_cpu::bit(uint8_t opcode)
+{
 	uint8_t reg = opcode & 0x7;
 	uint8_t bit = (opcode>>3) & 0x7;
 
-	switch(reg)
-	{
-		case 0: //B
-			m_registers.ZF = !(m_registers.BC.b[1] & (1 << bit));
-			break;
-		case 1: //C
-			m_registers.ZF = !(m_registers.BC.b[0] & (1 << bit));
-			break;
-		case 2: //D
-			m_registers.ZF = !(m_registers.DE.b[1] & (1 << bit));
-			break;
-		case 3: //E
-			m_registers.ZF = !(m_registers.DE.b[0] & (1 << bit));
-			break;
-		case 4: //H
-			m_registers.ZF = !(m_registers.HL.b[1] & (1 << bit));
-			break;
-		case 5: //L
-			m_registers.ZF = !(m_registers.HL.b[0] & (1 << bit));
-			break;
-		case 6: //(HL)
-			m_registers.ZF = !(read(m_registers.HL.w) & (1 << bit));
-			break;
-		case 7: //A
-			m_registers.ZF = !(m_registers.A & (1 << bit));
-			break;
-	}
-	m_registers.N = false;
-	m_registers.H = true;
-	return (reg == 6) ? 16 : 8;
+	m_registers.ZF = !(m_8b_reg_map[reg] & (1 << bit));
+	return 8;
 }
 
-uint8_t lr35902_cpu::res(uint8_t opcode) {
+
+uint8_t lr35902_cpu::bitHL(uint8_t opcode)
+{
+	uint8_t bit = (opcode>>3) & 0x7;
+
+	m_registers.ZF = !(read(m_registers.HL.w) & (1 << bit));
+	return 16;
+}
+
+uint8_t lr35902_cpu::res(uint8_t opcode)
+{
 	uint8_t reg = opcode & 0x7;
 	uint8_t bit = (opcode>>3) & 0x7;
 
-	switch(reg)
-	{
-		case 0: //B
-			m_registers.BC.b[1] &= ~(1 << bit);
-			break;
-		case 1: //C
-			m_registers.BC.b[0] &= ~(1 << bit);
-			break;
-		case 2: //D
-			m_registers.DE.b[1] &= ~(1 << bit);
-			break;
-		case 3: //E
-			m_registers.DE.b[0] &= ~(1 << bit);
-			break;
-		case 4: //H
-			m_registers.HL.b[1] &= ~(1 << bit);
-			break;
-		case 5: //L
-			m_registers.HL.b[0] &= ~(1 << bit);
-			break;
-		case 6: //(HL)
-			write(m_registers.HL.w, read(m_registers.HL.w) & ~(1 << bit));
-			break;
-		case 7: //A
-			m_registers.A &= ~(1 << bit);
-			break;
-	}
-	return (reg == 6) ? 16 : 8;
+	m_8b_reg_map[reg] &= ~(1 << bit);
+	return 8;
 }
 
-uint8_t lr35902_cpu::set(uint8_t opcode) {
+uint8_t lr35902_cpu::resHL(uint8_t opcode)
+{
+	uint8_t bit = (opcode>>3) & 0x7;
+
+	write(m_registers.HL.w, read(m_registers.HL.w) & ~(1 << bit));
+	return 16;
+}
+
+uint8_t lr35902_cpu::set(uint8_t opcode)
+{
 	uint8_t reg = opcode & 0x7;
 	uint8_t bit = (opcode>>3) & 0x7;
 
-	switch(reg)
-	{
-		case 0: //B
-			m_registers.BC.b[1] |= (1 << bit);
-			break;
-		case 1: //C
-			m_registers.BC.b[0] |= (1 << bit);
-			break;
-		case 2: //D
-			m_registers.DE.b[1] |= (1 << bit);
-			break;
-		case 3: //E
-			m_registers.DE.b[0] |= (1 << bit);
-			break;
-		case 4: //H
-			m_registers.HL.b[1] |= (1 << bit);
-			break;
-		case 5: //L
-			m_registers.HL.b[0] |= (1 << bit);
-			break;
-		case 6: //(HL)
-			write(m_registers.HL.w, read(m_registers.HL.w) | (1 << bit));
-			break;
-		case 7: //A
-			m_registers.A |= (1 << bit);
-			break;
-	}
-	return (reg == 6) ? 16 : 8;
+	m_8b_reg_map[reg] |= (1 << bit);
+	return 8;
+}
+
+uint8_t lr35902_cpu::setHL(uint8_t opcode)
+{
+	uint8_t bit = (opcode>>3) & 0x7;
+
+	write(m_registers.HL.w, read(m_registers.HL.w) | (1 << bit));
+	return 16;
 }

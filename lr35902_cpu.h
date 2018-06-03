@@ -14,7 +14,7 @@ public:
 	void run(uint32_t cycles);
 
 private:
-	uint8_t nop(uint8_t opcode);
+	uint8_t nop(uint8_t);
 
 	using instructionHandler = decltype(&lr35902_cpu::nop);
 
@@ -50,6 +50,18 @@ private:
 		uint8_t divider;
 	} m_registers;
 
+	uint8_t m_stub;
+	std::reference_wrapper<uint8_t> m_8b_reg_map[8] = {
+		m_registers.BC.b[1], // 0 => B
+		m_registers.BC.b[0], // 1 => C
+		m_registers.DE.b[1], // 2 => D
+		m_registers.DE.b[0], // 3 => E
+		m_registers.HL.b[1], // 4 => H
+		m_registers.HL.b[0], // 5 => L
+		m_stub,
+		m_registers.A // 7 => A
+	};
+
 	bool m_halted = false;
 	bool m_stoped = false;
 	bool m_maskedInterrupts = false;
@@ -72,29 +84,29 @@ private:
 	inline uint16_t getValForReg2b(uint8_t regnum);
 	inline uint8_t getFlags8b();
 
-	uint8_t stop(uint8_t opcode);
+	uint8_t stop(uint8_t);
 	uint8_t jr_r8(uint8_t opcode);
 	uint8_t ld_d16(uint8_t opcode);
 	uint8_t ld_a(uint8_t opcode);
 	uint8_t inc_16(uint8_t opcode);
 	uint8_t dec_16(uint8_t opcode);
 	uint8_t inc_8(uint8_t opcode);
-	uint8_t inc_hl(uint8_t opcode);
+	uint8_t inc_hl(uint8_t);
 	uint8_t dec_8(uint8_t opcode);
-	uint8_t dec_hl(uint8_t opcode);
+	uint8_t dec_hl(uint8_t);
 	uint8_t ld_d8(uint8_t opcode);
-	uint8_t rlca(uint8_t opcode);
-	uint8_t rla(uint8_t opcode);
-	uint8_t rrca(uint8_t opcode);
-	uint8_t rra(uint8_t opcode);
-	uint8_t daa(uint8_t opcode);
-	uint8_t scf(uint8_t opcode);
-	uint8_t cpl(uint8_t opcode);
-	uint8_t ccf(uint8_t opcode);
-	uint8_t ld_a16_sp(uint8_t opcode);
+	uint8_t rlca(uint8_t);
+	uint8_t rla(uint8_t);
+	uint8_t rrca(uint8_t);
+	uint8_t rra(uint8_t);
+	uint8_t daa(uint8_t);
+	uint8_t scf(uint8_t);
+	uint8_t cpl(uint8_t);
+	uint8_t ccf(uint8_t);
+	uint8_t ld_a16_sp(uint8_t);
 	uint8_t add_hl(uint8_t opcode);
 	uint8_t ld_reg8(uint8_t opcode);
-	uint8_t halt(uint8_t opcode);
+	uint8_t halt(uint8_t);
 	uint8_t add_a(uint8_t opcode);
 	uint8_t sub(uint8_t opcode);
 	uint8_t adc(uint8_t opcode);
@@ -108,32 +120,43 @@ private:
 	uint8_t jp_cc_a16(uint8_t opcode);
 	uint8_t call_a16 (uint8_t opcode);
 	uint8_t rst(uint8_t opcode);
-	uint8_t di(uint8_t opcode);
-	uint8_t ei(uint8_t opcode);
-	uint8_t add_sp_r8(uint8_t opcode);
-	uint8_t jp_hl(uint8_t opcode);
-	uint8_t ldhl_spr8(uint8_t opcode);
-	uint8_t ld_sp_hl(uint8_t opcode);
+	uint8_t di(uint8_t);
+	uint8_t ei(uint8_t);
+	uint8_t add_sp_r8(uint8_t);
+	uint8_t jp_hl(uint8_t);
+	uint8_t ldhl_spr8(uint8_t);
+	uint8_t ld_sp_hl(uint8_t);
 	uint8_t ld_a_a16(uint8_t opcode);
 	uint8_t ret_cc(uint8_t opcode);
 	uint8_t push(uint8_t opcode);
 	uint8_t pop(uint8_t opcode);
-	uint8_t reti(uint8_t opcode);
-	uint8_t ret(uint8_t opcode);
-	uint8_t jp_a16(uint8_t opcode);
+	uint8_t reti(uint8_t);
+	uint8_t ret(uint8_t);
+	uint8_t jp_a16(uint8_t);
 
-	uint8_t cb(uint8_t opcode);
+	uint8_t cb(uint8_t);
 	uint8_t rlc(uint8_t opcode);
+	uint8_t rlcHL(uint8_t);
 	uint8_t rrc(uint8_t opcode);
+	uint8_t rrcHL(uint8_t);
 	uint8_t rl(uint8_t opcode);
+	uint8_t rlHL(uint8_t);
 	uint8_t rr(uint8_t opcode);
+	uint8_t rrHL(uint8_t);
 	uint8_t sla(uint8_t opcode);
+	uint8_t slaHL(uint8_t);
 	uint8_t sra(uint8_t opcode);
+	uint8_t sraHL(uint8_t);
 	uint8_t swap(uint8_t opcode);
+	uint8_t swapHL(uint8_t);
 	uint8_t srl(uint8_t opcode);
+	uint8_t srlHL(uint8_t);
 	uint8_t bit(uint8_t opcode);
+	uint8_t bitHL(uint8_t opcode);
 	uint8_t res(uint8_t opcode);
+	uint8_t resHL(uint8_t opcode);
 	uint8_t set(uint8_t opcode);
+	uint8_t setHL(uint8_t opcode);
 
 	void write(uint16_t address, uint8_t data);
 	uint8_t read(uint16_t address);
