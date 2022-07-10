@@ -7,61 +7,58 @@
 
 class Cartridge
 {
-	enum CartridgeType {
-		ROM_ONLY,
-		ROM_MBC1, ROM_MBC1_RAM, ROM_MBC1_RAM_BATT,
-		UNKNOWN_04,
-		ROM_MBC2, ROM_MBC2_BATT,
-		UNKNOWN_07,
-		ROM_RAM, ROM_RAM_BATT,
-		//ROM_MMM01, ROM_MMM01_SRAM, ROM_MMM01_SRAM_BATT,
-		MAX_SUPPORTED_TYPE
-	};
-	
-	static const char* CartridgeTypeDesc[];
-
-	template<unsigned int size>
-	struct MemoryBank { uint8_t bytes[size]; };
-	
-	inline bool cartridgeHasBattery() {
-		return m_cartridgeType == ROM_RAM_BATT || m_cartridgeType == ROM_MBC1_RAM_BATT || m_cartridgeType == ROM_MBC2_BATT;
-	}
 
 public:
-	Cartridge();
-	~Cartridge() = default;
+	template<unsigned int size>
+	struct MemoryBank { uint8_t bytes[size]; };
 
-	bool loadRom(const std::string& path);
+	Cartridge(std::vector<MemoryBank<0x4000>> &ROMBanks, std::vector<MemoryBank<0x2000>> &RAMBanks, bool has_battery);
+	virtual ~Cartridge() = default;
 
-	uint8_t read(uint16_t address);
-	void write(uint16_t address, uint8_t data);
+	virtual uint8_t read(uint16_t address) = 0;
+	virtual void write(uint16_t address, uint8_t data) = 0;
 
 	void saveRAMToFile(const std::string& romPath);
 
-private:
-	CartridgeType m_cartridgeType;
-	
-	std::vector<MemoryBank<0x4000>> m_ROMBanks;
-	std::vector<MemoryBank<0x2000>> m_RAMBanks;
+	static Cartridge* load(std::ifstream &romFile, std::ifstream &savFile) noexcept(false);
 
-	MemoryBank<512> m_MBC2InternalRAM;
+protected:
+	const std::vector<MemoryBank<0x4000>> m_ROMBanks;
+	std::vector<MemoryBank<0x2000>> m_RAMBanks;
 
 	uint8_t m_currentROMBank;
 	uint8_t m_currentRAMBank;
 
 	bool m_RAMWriteEnabled;
+
+	const bool m_hasBattery;
+};
+
+
+class CartridgeNoMBC : public Cartridge
+{
+public:
+	CartridgeNoMBC(std::vector<Cartridge::MemoryBank<0x4000>> &ROMBanks, std::vector<Cartridge::MemoryBank<0x2000>> &RAMBanks, bool has_battery);
+	uint8_t read(uint16_t address);
+	void write(uint16_t address, uint8_t value);
+};
+
+class CartridgeMBC1 : public Cartridge
+{
+private:
+	uint8_t m_MBC1Mode;
 	uint8_t m_ROMBankSelector;
 
-	uint8_t m_MBC1Mode;
+public:
+	CartridgeMBC1(std::vector<Cartridge::MemoryBank<0x4000>> &ROMBanks, std::vector<Cartridge::MemoryBank<0x2000>> &RAMBanks, bool has_battery);
+	uint8_t read(uint16_t address);
+	void write(uint16_t address, uint8_t value);
+};
 
-	std::function<void(Cartridge&, uint16_t, uint8_t)> m_writeFunc;
-	std::function<uint8_t(Cartridge&, uint16_t)> m_readFunc;
-
-	void writeROMOnly(uint16_t address, uint8_t value);
-
-	uint8_t readMBC1(uint16_t address);
-	void writeMBC1(uint16_t address, uint8_t value);
-
-	uint8_t readMBC2(uint16_t address);
-	void writeMBC2(uint16_t address, uint8_t value);
+class CartridgeMBC2 : public Cartridge
+{
+public:
+	CartridgeMBC2(std::vector<Cartridge::MemoryBank<0x4000>> &ROMBanks, std::vector<Cartridge::MemoryBank<0x2000>> &RAMBanks, bool has_battery);
+	uint8_t read(uint16_t address);
+	void write(uint16_t address, uint8_t value);
 };

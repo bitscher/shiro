@@ -1,4 +1,5 @@
 #include <cstdio>
+#include <fstream>
 #include <iostream>
 #include <chrono>
 #include <thread>
@@ -31,18 +32,25 @@ int main( int argc, char * argv[] ) {
 	else
 		romPath = argv[1];
 
+	std::ifstream romFile(romPath, std::ios_base::in | std::ios_base::binary);
+	if (!romFile.is_open()) {
+		std::cerr << "Could not open rom " << romPath << std::endl;
+		return -1;
+	}
+	std::ifstream savFile(romPath + ".sav", std::ios_base::in | std::ios_base::binary);
+
 	// Emulation classes
-	Memory mem;
+	Memory mem(romFile, savFile);
 	lr35902_cpu cpu(mem);
 	Graphics graphics(mem);
 	GamepadHandler gamepad(mem);
 
+	romFile.close();
+	savFile.close();
+
 	// Program interface classes (currently SDL)
 	Display renderer(graphics);
 	Controls controls(gamepad, renderer);
-
-	if (!mem.getCartridge().loadRom(romPath))
-		return -1;
 
 	bool quit = false;
 
@@ -90,7 +98,7 @@ int main( int argc, char * argv[] ) {
 		}
 	}
 
-	mem.getCartridge().saveRAMToFile(romPath);
+	mem.saveRAMToFile(romPath);
 
 	return 0;
 }

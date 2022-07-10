@@ -6,45 +6,54 @@
 #include <algorithm>
 #include <cmath>
 
-const char* Cartridge::CartridgeTypeDesc[] = {
-	"ROM_ONLY",
-	"ROM_MBC1", "ROM_MBC1_RAM", "ROM_MBC1_RAM_BATT",
-	"UNKNOWN",
-	"ROM_MBC2", "ROM_MBC2_BATT",
-	"UNKNOWN",
-	"ROM_RAM", "ROM_RAM_BATT",
-	//"ROM_MMM01", "ROM_MMM01_SRAM", "ROM_MMM01_SRAM_BATT"
+#define ARRAY_SIZE(arr) (sizeof(arr)/sizeof(*(arr)))
+
+enum MBCType {
+	UNKNOWN,
+	NO_MBC,
+	MBC1,
+	MBC2,
 };
 
-Cartridge::Cartridge() :
-	m_cartridgeType(ROM_ONLY),
-	m_currentROMBank(1),
-	m_currentRAMBank(0),
-	m_RAMWriteEnabled(false),
-	m_ROMBankSelector(0),
-	m_MBC1Mode(0),
-	m_writeFunc(&Cartridge::writeROMOnly),
-	m_readFunc(&Cartridge::readMBC1)
+static const struct CartridgeDesc {
+	const std::string name;
+	enum MBCType mbc_type;
+	bool has_ram;
+	bool has_battery;
+} CartDescriptions[] = {
+	/* 0 */ {"ROM_ONLY",          NO_MBC,  false, false},
+	/* 1 */ {"ROM_MBC1",          MBC1,    false, false},
+	/* 2 */ {"ROM_MBC1_RAM",      MBC1,    true,  false},
+	/* 3 */ {"ROM_MBC1_RAM_BATT", MBC1,    true,  true},
+	/* 4 */ {"UNKNOWN",           UNKNOWN, false, false},
+	/* 5 */ {"ROM_MBC2",          MBC2,    true,  false},
+	/* 6 */ {"ROM_MBC2_BATT",     MBC2,    true,  true},
+	/* 7 */ {"UNKNOWN",           UNKNOWN, false, false},
+	/* 8 */ {"ROM_RAM",           NO_MBC,  true,  false},
+	/* 9 */ {"ROM_RAM_BATT",      NO_MBC,  true,  true},
+};
+
+Cartridge* Cartridge::load(std::ifstream &romFile, std::ifstream &savFile) noexcept(false)
 {
-	m_MBC2InternalRAM = {0};
-}
+	uint8_t ROMBanksCount = 1;
+	uint8_t RAMBanksCount = 0;
+	uint8_t cartridgeType;
+	std::vector<Cartridge::MemoryBank<0x4000>> ROMBanks;
+	std::vector<Cartridge::MemoryBank<0x2000>> RAMBanks;
 
-bool Cartridge::loadRom(const std::string& path) {
-	std::ifstream romFile;
+	/* Load first ROM bank */
+	ROMBanks.emplace_back(Cartridge::MemoryBank<0x4000>());
+	if (!romFile.read(reinterpret_cast<char*>(ROMBanks[0].bytes), sizeof(ROMBanks[0].bytes)))
+		throw std::runtime_error("Invalid ROM file");
 
-	romFile.open(path, std::ios_base::in | std::ios_base::binary);
+	cartridgeType =   ROMBanks[0].bytes[0x147];
+	uint8_t romSize = ROMBanks[0].bytes[0x148];
+	uint8_t ramSize = ROMBanks[0].bytes[0x149];
 
-	if (!romFile.is_open())
-	{
-		fprintf(stderr, "Could not open rom %s\n", path.c_str());
-		return false;
-	}
+	if (cartridgeType >= ARRAY_SIZE(CartDescriptions) || CartDescriptions[cartridgeType].mbc_type == UNKNOWN)
+		throw std::runtime_error("Error: Unknown cartridge type: " + cartridgeType);
 
-	unsigned int ROMBanksCount = 1;
-
-	romFile.seekg(0x148, std::ios_base::beg);
-	int romSize = romFile.peek();
-	if (romSize >= 0 && romSize <= 6)
+	if (romSize <= 6)
 		ROMBanksCount = static_cast<unsigned int>(std::pow(2, romSize + 1));
 	else if (romSize == 0x52)
 		ROMBanksCount = 72;
@@ -53,117 +62,117 @@ bool Cartridge::loadRom(const std::string& path) {
 	else if (romSize == 0x54)
 		ROMBanksCount = 96;
 	else
+		throw std::runtime_error("Unknown ROM Size (0x148) = " + romSize);
+
+	switch (ramSize)
 	{
-		fprintf(stderr, "Unknown ROM Size (0x148) = %u\n", romSize);
-		return false;
-	}
-
-	printf("ROM size: %u ROM banks\n", ROMBanksCount);
-
-	romFile.seekg(std::ios_base::beg);
-
-	m_ROMBanks.reserve(ROMBanksCount);
-	//Read the ROM banks
-	for (unsigned int bankIdx = 0; bankIdx < ROMBanksCount && romFile; ++bankIdx)
-	{
-		m_ROMBanks.emplace_back(MemoryBank<0x4000>());
-		romFile.read(reinterpret_cast<char*>(m_ROMBanks[bankIdx].bytes), 0x4000);
-	}
-
-	m_currentROMBank = ROMBanksCount >= 2 ? 1 : 0;
-	m_cartridgeType = static_cast<CartridgeType>(m_ROMBanks[0].bytes[0x147]);
-
-	if (m_cartridgeType >= MAX_SUPPORTED_TYPE)
-	{
-		fprintf(stderr, "Error: Unknown cartridge type: %u\n", m_cartridgeType);
-		return false;
-	}
-	else if (romFile)
-	{
-		printf("Read %ld bytes from rom\n", static_cast<long int>(romFile.gcount()));
-		printf("Cartridge Type: (%u) %s\n", m_cartridgeType, CartridgeTypeDesc[m_cartridgeType]);
-	}
-	else
-	{
-		fprintf(stderr, "Error: Read only %ld bytes from rom\n", static_cast<long int>(romFile.gcount()));
-		return false;
-	}
-
-	romFile.close();
-
-	uint8_t RAMBanksCount = 0;
-
-	switch (m_ROMBanks[0].bytes[0x149]) // RAM size
-	{
-	case 1:
+	case 1: /* Only first 2KB of 1 bank */
 	case 2: RAMBanksCount = 1; break;
 	case 3: RAMBanksCount = 4; break;
 	case 4: RAMBanksCount = 16; break;
 	}
-	printf("RAM size: %u RAM banks\n", RAMBanksCount);
+
+	if (CartDescriptions[cartridgeType].mbc_type == MBC2)
+		RAMBanksCount = 1;
+
+	std::cout << "ROM size: " << static_cast<uint32_t>(ROMBanksCount) << " ROM banks" << std::endl;
+	std::cout << "RAM size: " << static_cast<uint32_t>(RAMBanksCount) << " RAM banks" << std::endl;
+
+	ROMBanks.resize(ROMBanksCount, Cartridge::MemoryBank<0x4000>());
+	//Read the rest of the ROM banks
+	for (unsigned int i = 1; i < ROMBanksCount && romFile; ++i)
+	{
+		if (!romFile.read(reinterpret_cast<char*>(ROMBanks[i].bytes), sizeof(ROMBanks[i].bytes)))
+			throw std::runtime_error("File too small, bytes read: " + romFile.gcount());
+	}
+
+	std::cout << "Read " << static_cast<int32_t>(romFile.gcount()) << " bytes from rom" << std::endl;
+	std::cout << "Cartridge Type: (" << static_cast<uint32_t>(cartridgeType) << ") " << CartDescriptions[cartridgeType].name << std::endl;
 
 	if (RAMBanksCount > 0)
-	{
-		m_RAMBanks.reserve(RAMBanksCount);
-		for (unsigned int i = 0; i < RAMBanksCount; ++i)
-			m_RAMBanks.emplace_back(MemoryBank<0x2000>());
+		RAMBanks.resize(RAMBanksCount, Cartridge::MemoryBank<0x2000>());
 
-		m_currentRAMBank = 0;
-	}
-	
-	switch (m_cartridgeType)
+	if (CartDescriptions[cartridgeType].has_ram && savFile.is_open())
 	{
-	case ROM_ONLY:
-	case ROM_RAM:
-	case ROM_RAM_BATT:
-		m_readFunc = &Cartridge::readMBC1;
-		m_writeFunc = &Cartridge::writeROMOnly;
-		break;
-	case ROM_MBC1:
-	case ROM_MBC1_RAM:
-	case ROM_MBC1_RAM_BATT:
-		m_readFunc = &Cartridge::readMBC1;
-		m_writeFunc = &Cartridge::writeMBC1;
-		break;
-	case ROM_MBC2:
-	case ROM_MBC2_BATT:
-		m_readFunc = &Cartridge::readMBC2;
-		m_writeFunc = &Cartridge::writeMBC2;
-		break;
+		for (unsigned int i = 0; i < RAMBanks.size() && !savFile.eof(); ++i)
+			savFile.read(reinterpret_cast<char*>(RAMBanks[i].bytes), sizeof(RAMBanks[i].bytes));
+	}
+
+	switch(CartDescriptions[cartridgeType].mbc_type)
+	{
+	case NO_MBC:
+		return new CartridgeNoMBC(ROMBanks, RAMBanks, CartDescriptions[cartridgeType].has_battery);
+	case MBC1:
+		return new CartridgeMBC1(ROMBanks, RAMBanks, CartDescriptions[cartridgeType].has_battery);
+	case MBC2:
+		return new CartridgeMBC2(ROMBanks, RAMBanks, CartDescriptions[cartridgeType].has_battery);
+	case UNKNOWN:
 	default:
-		break;
+		throw std::runtime_error("Unknown Cartridge type");
 	}
 
-	//Load .sav file if it exists
-	if (cartridgeHasBattery())
-	{
-		std::ifstream savFile;
-		savFile.open(path + ".sav", std::ios_base::in | std::ios_base::binary);
-		if (savFile.is_open())
-		{
-			if (m_cartridgeType == ROM_MBC2_BATT)
-			{
-				savFile.read(reinterpret_cast<char*>(m_MBC2InternalRAM.bytes), sizeof(m_MBC2InternalRAM.bytes));
-			}
-			else
-			{
-				for (unsigned int i = 0; i < m_RAMBanks.size(); ++i)
-					savFile.read(reinterpret_cast<char*>(m_RAMBanks[i].bytes), sizeof(m_RAMBanks[i].bytes));
-			}
-
-			savFile.close();
-		}
-	}
-
-	return true;
 }
 
-uint8_t Cartridge::read(uint16_t address)
+Cartridge::Cartridge(std::vector<MemoryBank<0x4000>> &ROMBanks, std::vector<MemoryBank<0x2000>> &RAMBanks, bool has_battery) :
+	m_ROMBanks(std::move(ROMBanks)),
+	m_RAMBanks(std::move(RAMBanks)),
+	m_currentRAMBank(0),
+	m_RAMWriteEnabled(false),
+	m_hasBattery(has_battery)
 {
-	return m_readFunc(*this, address);
+	m_currentROMBank = std::min(static_cast<size_t>(1), m_ROMBanks.size() - 1);
 }
 
-uint8_t Cartridge::readMBC1(uint16_t address)
+void Cartridge::saveRAMToFile(const std::string& romPath)
+{
+	if (!m_hasBattery)
+		return;
+
+	std::ofstream savFile;
+
+	savFile.open(romPath + ".sav", std::ios_base::out | std::ios_base::binary);
+	if (!savFile.is_open())
+	{
+		fprintf(stderr, "Could not create sav file at %s.sav\n", romPath.c_str());
+		return;
+	}
+
+	for (const auto& bank : m_RAMBanks)
+		savFile.write(reinterpret_cast<const char*>(bank.bytes), sizeof(bank.bytes));
+
+	savFile.close();
+}
+
+CartridgeNoMBC::CartridgeNoMBC(std::vector<MemoryBank<0x4000>> &ROMBanks, std::vector<MemoryBank<0x2000>> &RAMBanks, bool has_battery) :
+	Cartridge(ROMBanks, RAMBanks, has_battery)
+{}
+
+uint8_t CartridgeNoMBC::read(uint16_t address)
+{
+	if (address < 0x4000)
+		return m_ROMBanks[0].bytes[address];
+	else if (address < 0x8000)
+		return m_ROMBanks[m_currentROMBank].bytes[address - 0x4000];
+	else if (address >= 0xA000 && address < 0xC000 && m_RAMBanks.size() > 0) // Read in switchable ram bank
+		return m_RAMBanks[m_currentRAMBank].bytes[address - 0xA000];
+
+	DEBUG_ONLY(fprintf(stderr, "Illegal read in Catridge at address 0x%04X\n", address););
+	return 0xFF;
+}
+
+void CartridgeNoMBC::write(uint16_t address, uint8_t value)
+{
+	(void) address;
+	(void) value;
+}
+
+CartridgeMBC1::CartridgeMBC1(std::vector<Cartridge::MemoryBank<0x4000>> &ROMBanks, std::vector<Cartridge::MemoryBank<0x2000>> &RAMBanks, bool has_battery) :
+	Cartridge(ROMBanks, RAMBanks, has_battery),
+	m_MBC1Mode(0),
+	m_ROMBankSelector(0)
+{}
+
+uint8_t CartridgeMBC1::read(uint16_t address)
 {
 	if (address < 0x4000)
 		return m_ROMBanks[0].bytes[address];
@@ -176,25 +185,12 @@ uint8_t Cartridge::readMBC1(uint16_t address)
 	}
 	else if (address >= 0xA000 && address < 0xC000 && m_RAMBanks.size() > 0) // Read in switchable ram bank
 		return m_RAMBanks[m_currentRAMBank].bytes[address - 0xA000];
-	else
-	{
-		DEBUG_ONLY(fprintf(stderr, "Illegal read in Catridge at address 0x%04X\n", address););
-		return 0xFF;
-	}
+
+	DEBUG_ONLY(fprintf(stderr, "Illegal read in Catridge at address 0x%04X\n", address););
+	return 0xFF;
 }
 
-void Cartridge::write(uint16_t address, uint8_t data)
-{
-	m_writeFunc(*this, address, data);
-}
-
-void Cartridge::writeROMOnly(uint16_t address, uint8_t value)
-{
-	(void) address;
-	(void) value;
-}
-
-void Cartridge::writeMBC1(uint16_t address, uint8_t value)
+void CartridgeMBC1::write(uint16_t address, uint8_t value)
 {
 	if (address >= 0x6000 && address <= 0x8000)
 		m_MBC1Mode = value & 0x1;
@@ -232,71 +228,29 @@ void Cartridge::writeMBC1(uint16_t address, uint8_t value)
 	}
 }
 
-uint8_t Cartridge::readMBC2(uint16_t address)
+CartridgeMBC2::CartridgeMBC2(std::vector<Cartridge::MemoryBank<0x4000>> &ROMBanks, std::vector<Cartridge::MemoryBank<0x2000>> &RAMBanks, bool has_battery) :
+	Cartridge(ROMBanks, RAMBanks, has_battery)
+{}
+
+uint8_t CartridgeMBC2::read(uint16_t address)
 {
 	if (address < 0x4000)
 		return m_ROMBanks[0].bytes[address];
 	else if (address < 0x8000) // Read in switchable bank
 		return m_ROMBanks[m_currentROMBank].bytes[address - 0x4000];
-	else if (address >= 0xA000 && address < 0xA200) // Read in MBC internal RAM
-		return m_MBC2InternalRAM.bytes[address - 0xA000] & 0xF;
-	else
-	{
-		DEBUG_ONLY(fprintf(stderr, "Illegal read in Catridge at address 0x%04X\n", address););
-		return 0xFF;
-	}
+	else if (address >= 0xA000 && address < 0xA200)
+		return m_RAMBanks[0].bytes[address - 0xA000] & 0xF;
+
+	DEBUG_ONLY(fprintf(stderr, "Illegal read in Catridge at address 0x%04X\n", address););
+	return 0xFF;
 }
 
-void Cartridge::writeMBC2(uint16_t address, uint8_t value)
+void CartridgeMBC2::write(uint16_t address, uint8_t value)
 {
-	if (address < 0x2000 && (address & 0x100) == 0)
-	{
-		// RAM Enabling
+	if (address < 0x2000 && (address & 0x100) == 0) // RAM Enabling
 		m_RAMWriteEnabled = ((value & 0xF) == 0x0A);
-	}
-	else if (address >= 0x2000 && address < 0x4000)
-	{
-		// Switch ROM Bank
-		if ((address & 0x100) == 0x100)
-		{
-			m_currentROMBank = static_cast<uint8_t>(std::max(value & 0x0F, 1));
-		}
-	}
+	else if (address >= 0x2000 && address < 0x4000 && (address & 0x100) == 0x100) // Switch ROM Bank
+		m_currentROMBank = static_cast<uint8_t>(std::max(value & 0x0F, 1));
 	else if (address >= 0xA000 && address < 0xA200 && m_RAMWriteEnabled)
-	{
-		m_MBC2InternalRAM.bytes[address - 0xA000] = (value & 0xF);
-	}
-	else
-	{
-		DEBUG_ONLY(fprintf(stderr, "Illegal write in Catridge at address 0x%04X\n", address););
-	}
-}
-
-void Cartridge::saveRAMToFile(const std::string& romPath)
-{
-	if (!cartridgeHasBattery())
-		return;
-
-	std::ofstream savFile;
-
-	savFile.open(romPath + ".sav", std::ios_base::out | std::ios_base::binary);
-	if (!savFile.is_open())
-	{
-		fprintf(stderr, "Could not create sav file at %s.sav\n", romPath.c_str());
-		return;
-	}
-
-	if (m_cartridgeType == ROM_MBC2_BATT)
-	{
-		savFile.write(reinterpret_cast<const char*>(m_MBC2InternalRAM.bytes), sizeof(m_MBC2InternalRAM.bytes));
-	}
-	else
-	{
-		for (const auto& bank : m_RAMBanks)
-		{
-			savFile.write(reinterpret_cast<const char*>(bank.bytes), sizeof(bank.bytes));
-		}
-	}
-
-	savFile.close();
+		m_RAMBanks[0].bytes[address - 0xA000] = (value & 0xF);
 }
