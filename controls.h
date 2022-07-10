@@ -1,12 +1,9 @@
 #pragma once
 
 #include "gamepad.h"
+#include "display.h"
 
-#ifdef _MSC_VER
-	#include <SDL.h>
-#else
-	#include <SDL2/SDL.h>
-#endif
+#include <SDL.h>
 
 /*
 * This class is handling the input on the host machine with SDL
@@ -18,10 +15,11 @@
 class Controls
 {
 public:
-	Controls(GamepadHandler& gamepadHdlr);
+	Controls(GamepadHandler &gamepadHdlr, Display &display);
 
 	void UpdateEvents(bool &quit);
 
 private:
-	GamepadHandler& m_GamePadHandler;
+	GamepadHandler &m_GamePadHandler;
+	Display &m_Display;
 };

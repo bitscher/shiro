@@ -39,7 +39,7 @@ int main( int argc, char * argv[] ) {
 
 	// Program interface classes (currently SDL)
 	Display renderer(graphics);
-	Controls controls(gamepad);
+	Controls controls(gamepad, renderer);
 
 	if (!mem.getCartridge().loadRom(romPath))
 		return -1;

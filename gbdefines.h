@@ -25,9 +25,9 @@ enum : uint16_t {
 	LCDC_Y_OFT		= 0xFF44,
 	LCDC_CY_OFT		= 0xFF45,
 
-	BGPAL_OFT 		= 0xFF47,	//Background Palette
-	OBJ0PAL_OFT 	= 0xFF48,	//Sprite Palette #0
-	OBJ1PAL_OFT 	= 0xFF49,	//Sprite Palette #1
+	BGPAL_OFT		= 0xFF47,	//Background Palette
+	OBJ0PAL_OFT		= 0xFF48,	//Sprite Palette #0
+	OBJ1PAL_OFT		= 0xFF49,	//Sprite Palette #1
 
 	WY_OFT			= 0xFF4A,	//Window Y Position
 	WX_OFT			= 0xFF4B,	//Window X Position minus 7

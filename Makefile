@@ -3,8 +3,10 @@ CXX := g++
 CPP_FILES := $(wildcard *.cpp)
 OBJ_FILES := $(addprefix build/, $(CPP_FILES:.cpp=.o))
 
-LDLIBS := -lSDL2 -lpthread
-CXXFLAGS := -Wall -Wextra -pedantic -Wold-style-cast -std=c++11 -g -Werror -O3
+LDLIBS := $(shell sdl2-config --libs)
+CXXFLAGS := \
+	-Wall -Wextra -pedantic -Wold-style-cast -std=c++11 -g -Werror -O3 \
+	$(shell sdl2-config --cflags)
 
 OUTPUT_OPTION=-MMD -MP -o $@
 

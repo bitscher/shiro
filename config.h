@@ -30,7 +30,10 @@ public:
 	}
 
 private:
-	Config() : s_playBootRom(false), s_showSpriteDebug(false) {
+	Config() {
+		/* Default conf */
+		s_playBootRom = false;
+		s_showSpriteDebug = false;
 		setSpeed(1);
 	}
 };

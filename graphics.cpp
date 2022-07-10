@@ -15,6 +15,9 @@ Graphics::Graphics(Memory & memory): m_memory(memory)
 void Graphics::drawLine() {
 	uint8_t currentLine = getYCoordinate();
 
+	if (!isLCDEnabled())
+		return;
+
 	drawBG(currentLine);
 	drawWin(currentLine);
 	drawObj(currentLine);
@@ -271,9 +274,6 @@ void Graphics::fillSpriteDebugBuffer()
 
 void Graphics::setLCDOperationMode(lcd_mode_t mode)
 {
-	//if (!isLCDEnabled())
-	//    return;
-
 	m_memory[STAT_OFT] &= 0xC7; // Clear bits 5, 4 & 3
 
 	switch(mode)

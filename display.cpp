@@ -17,7 +17,7 @@ Display::Display(Graphics &graphics) : m_graphics(graphics) {
 	if (Config::getInstance().s_showSpriteDebug)
 	{
 		SDL_CreateWindowAndRenderer(8 * 40, 16, 0, &m_sdlWindowSpriteDebug, &m_sdlRendererSpriteDebug);
-		SDL_SetWindowTitle(m_sdlWindow, "DEBUG - OAM");
+		SDL_SetWindowTitle(m_sdlWindowSpriteDebug, "DEBUG - OAM");
 		SDL_SetWindowPosition(m_sdlWindowSpriteDebug, 20, 40);
 		m_sdlTextureSpriteDebug = SDL_CreateTexture(m_sdlRendererSpriteDebug, SDL_PIXELFORMAT_RGB24, SDL_TEXTUREACCESS_STREAMING, 8 * 40, 16);
 
@@ -26,9 +26,14 @@ Display::Display(Graphics &graphics) : m_graphics(graphics) {
 }
 
 Display::~Display() {
+	SDL_DestroyTexture(m_sdlTexture);
+	SDL_DestroyRenderer(m_sdlRenderer);
 	SDL_DestroyWindow(m_sdlWindow);
-	if (Config::getInstance().s_showSpriteDebug)
+	if (Config::getInstance().s_showSpriteDebug) {
+		SDL_DestroyTexture(m_sdlTextureSpriteDebug);
+		SDL_DestroyRenderer(m_sdlRendererSpriteDebug);
 		SDL_DestroyWindow(m_sdlWindowSpriteDebug);
+	}
 	SDL_Quit();
 }
 
@@ -52,6 +57,11 @@ void Display::renderSpriteDebug() {
 
 	int pitch;
 	void * spriteDebugTexture;
+	Uint32 window_flags = SDL_GetWindowFlags(m_sdlWindowSpriteDebug);
+
+	if (window_flags & SDL_WINDOW_HIDDEN)
+		return;
+
 	SDL_LockTexture(m_sdlTextureSpriteDebug, NULL, static_cast<void**>(&spriteDebugTexture), &pitch);
 
 	std::memcpy(spriteDebugTexture, m_graphics.getSpriteDebugBuffer(), m_graphics.getSpriteDebugBufferSize());
@@ -60,4 +70,14 @@ void Display::renderSpriteDebug() {
 	SDL_RenderPresent(m_sdlRendererSpriteDebug);
 
 	SDL_UnlockTexture(m_sdlTextureSpriteDebug);
+}
+
+void Display::toggleOAMWindow()
+{
+	Uint32 window_flags = SDL_GetWindowFlags(m_sdlWindowSpriteDebug);
+
+	if (window_flags & SDL_WINDOW_HIDDEN)
+		SDL_ShowWindow(m_sdlWindowSpriteDebug);
+	else
+		SDL_HideWindow(m_sdlWindowSpriteDebug);
 }

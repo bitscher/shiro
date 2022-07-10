@@ -23,6 +23,7 @@ public:
 
 	void render();
 	void renderSpriteDebug();
+	void toggleOAMWindow();
 
 private:
 	Graphics &m_graphics;
