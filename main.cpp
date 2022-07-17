@@ -70,11 +70,7 @@ int main( int argc, char * argv[] ) {
 		if (graphics.shouldStartVBlank())
 		{
 			if (graphics.isLCDEnabled())
-			{
-				// Output it on SDL
-				// TODO should be on a different thread.
 				renderer.render();
-			}
 
 			if (conf.s_showSpriteDebug)
 			{

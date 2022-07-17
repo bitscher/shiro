@@ -7,21 +7,15 @@
 
 Display::Display(Graphics &graphics) : m_graphics(graphics) {
 	SDL_Init(SDL_INIT_VIDEO);
-	SDL_CreateWindowAndRenderer(160 * SCREEN_SCALING, 144 * SCREEN_SCALING, 0, &m_sdlWindow, &m_sdlRenderer);
-	SDL_SetWindowTitle(m_sdlWindow, "Shiro");
-
+	m_sdlWindow = SDL_CreateWindow("Shiro", SDL_WINDOWPOS_CENTERED, SDL_WINDOWPOS_CENTERED, 160 * SCREEN_SCALING, 144 * SCREEN_SCALING, SDL_WINDOW_VULKAN);
+	m_sdlRenderer = SDL_CreateRenderer(m_sdlWindow, -1, SDL_RENDERER_ACCELERATED | SDL_RENDERER_PRESENTVSYNC);
 	m_sdlTexture = SDL_CreateTexture(m_sdlRenderer,SDL_PIXELFORMAT_RGB24, SDL_TEXTUREACCESS_STREAMING, 160, 144);
-
-	render();
 
 	if (Config::getInstance().s_showSpriteDebug)
 	{
-		SDL_CreateWindowAndRenderer(8 * 40, 16, 0, &m_sdlWindowSpriteDebug, &m_sdlRendererSpriteDebug);
-		SDL_SetWindowTitle(m_sdlWindowSpriteDebug, "DEBUG - OAM");
-		SDL_SetWindowPosition(m_sdlWindowSpriteDebug, 20, 40);
+		m_sdlWindowSpriteDebug = SDL_CreateWindow("DEBUG - OAM", SDL_WINDOWPOS_CENTERED, 400, 8 * 40, 16, SDL_WINDOW_VULKAN);
+		m_sdlRendererSpriteDebug = SDL_CreateRenderer(m_sdlWindowSpriteDebug, -1, SDL_RENDERER_ACCELERATED | SDL_RENDERER_PRESENTVSYNC);
 		m_sdlTextureSpriteDebug = SDL_CreateTexture(m_sdlRendererSpriteDebug, SDL_PIXELFORMAT_RGB24, SDL_TEXTUREACCESS_STREAMING, 8 * 40, 16);
-
-		renderSpriteDebug();
 	}
 }
 
@@ -29,7 +23,8 @@ Display::~Display() {
 	SDL_DestroyTexture(m_sdlTexture);
 	SDL_DestroyRenderer(m_sdlRenderer);
 	SDL_DestroyWindow(m_sdlWindow);
-	if (Config::getInstance().s_showSpriteDebug) {
+	if (Config::getInstance().s_showSpriteDebug)
+	{
 		SDL_DestroyTexture(m_sdlTextureSpriteDebug);
 		SDL_DestroyRenderer(m_sdlRendererSpriteDebug);
 		SDL_DestroyWindow(m_sdlWindowSpriteDebug);
@@ -42,7 +37,7 @@ void Display::render() {
 
 	int pitch;
 	void * screenTexture;
-	SDL_LockTexture(m_sdlTexture, NULL, static_cast<void**>(&screenTexture), &pitch);
+	SDL_LockTexture(m_sdlTexture, NULL, &screenTexture, &pitch);
 
 	std::memcpy(screenTexture, m_graphics.getScreenBuffer(), m_graphics.getScreenBufferSize());
 
@@ -62,7 +57,7 @@ void Display::renderSpriteDebug() {
 	if (window_flags & SDL_WINDOW_HIDDEN)
 		return;
 
-	SDL_LockTexture(m_sdlTextureSpriteDebug, NULL, static_cast<void**>(&spriteDebugTexture), &pitch);
+	SDL_LockTexture(m_sdlTextureSpriteDebug, NULL, &spriteDebugTexture, &pitch);
 
 	std::memcpy(spriteDebugTexture, m_graphics.getSpriteDebugBuffer(), m_graphics.getSpriteDebugBufferSize());
 
