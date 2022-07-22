@@ -6,7 +6,7 @@ OBJ_FILES := $(addprefix build/, $(CPP_FILES:.cpp=.o))
 LDLIBS := $(shell sdl2-config --libs)
 CXXFLAGS := \
 	-Wall -Wextra -pedantic -Wold-style-cast -std=c++17 -g -Werror -O3 \
-	$(shell sdl2-config --cflags)
+	$(shell sdl2-config --cflags) -march=native
 
 OUTPUT_OPTION=-MMD -MP -o $@
 
